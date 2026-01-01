@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../app/generated/prisma/client";
+import { PrismaClient } from "@/app/generated/prisma/client";
 import { Book } from "../../domain/entities/book";
 import { BookRepositoryInterface } from "../../domain/repositories/bookRepositoryInterface";
 

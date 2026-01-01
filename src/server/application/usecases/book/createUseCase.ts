@@ -3,7 +3,7 @@ import { Book } from "../../../domain/entities/book";
 import { CreateRequestDto } from "../../dtos/book/createRequestDto";
 import { CreateResponseDto } from "../../dtos/book/createResponseDto";
 import { CreateUseCaseInterface } from "./createUseCaseInterface";
-import { IdGeneratorInterface } from "@/domain/utils/idGeneratorInterface";
+import { IdGeneratorInterface } from "../../../domain/utils/idGeneratorInterface";
 
 export class CreateUseCase implements CreateUseCaseInterface {
   constructor(

@@ -1,4 +1,4 @@
-import { CreateUseCaseInterface } from "../../server/application/usecases/book/createUseCaseInterface";
+import { CreateUseCaseInterface } from "../../application/usecases/book/createUseCaseInterface";
 import { CreateRequestDto } from "../../application/dtos/book/createRequestDto";
 import { CreateResponseDto } from "../../application/dtos/book/createResponseDto";
 
