@@ -12,9 +12,7 @@ export type CreateBookServerActionInput = {
 export class BookController {
   constructor(private readonly createUseCase: CreateUseCaseInterface) {}
 
-  async create(
-    input: CreateBookServerActionInput,
-  ): Promise<CreateResponseDto> {
+  async create(input: CreateBookServerActionInput): Promise<CreateResponseDto> {
     const requestDto: CreateRequestDto = {
       title: input.title,
       author: input.author,
@@ -26,5 +24,4 @@ export class BookController {
 
     return await this.createUseCase.execute(requestDto);
   }
-
 }
