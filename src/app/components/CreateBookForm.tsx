@@ -8,7 +8,7 @@ import { CreateResponseDto } from "@/server/application/dtos/book/createResponse
 import {
   createBookSchema,
   type CreateBookFormData,
-} from "../schemas/bookSchema";
+} from "../../schemas/bookSchema";
 
 export default function CreateBookForm() {
   const [isPending, startTransition] = useTransition();
