@@ -1,25 +1,23 @@
 import { CreateUseCaseInterface } from "../../application/usecases/book/createUseCaseInterface";
 import { CreateRequestDto } from "../../application/dtos/book/createRequestDto";
 import { CreateResponseDto } from "../../application/dtos/book/createResponseDto";
-
-// Server Actionsから受け取る外部形式の型定義
-export type CreateBookServerActionInput = {
-  title: string;
-  author: string;
-  publishedAt: string | Date;
-};
+import { createBookSchema, type CreateBookInput } from "@/schemas/bookSchema";
 
 export class BookController {
   constructor(private readonly createUseCase: CreateUseCaseInterface) {}
 
-  async create(input: CreateBookServerActionInput): Promise<CreateResponseDto> {
+  /**
+   * 書籍作成
+   * 外部形式（Server Actions形式）をアプリケーション層の形式（CreateRequestDto）に変換し、
+   * Zodスキーマでバリデーションを行う
+   */
+  async create(input: CreateBookInput): Promise<CreateResponseDto> {
+    const validatedData = createBookSchema.parse(input);
+
     const requestDto: CreateRequestDto = {
-      title: input.title,
-      author: input.author,
-      publishedAt:
-        input.publishedAt instanceof Date
-          ? input.publishedAt
-          : new Date(input.publishedAt),
+      title: validatedData.title,
+      author: validatedData.author,
+      publishedAt: validatedData.publishedAt,
     };
 
     return await this.createUseCase.execute(requestDto);

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createBook } from "../actions/bookActions";
 import { CreateResponseDto } from "@/server/application/dtos/book/createResponseDto";
 import {
   createBookSchema,
-  type CreateBookFormData,
+  type CreateBookInput,
 } from "../../schemas/bookSchema";
 
 export default function CreateBookForm() {
@@ -15,16 +15,26 @@ export default function CreateBookForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<CreateResponseDto | null>(null);
 
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
+  const defaultValues: CreateBookInput = {
+    title: "",
+    author: "",
+    publishedAt: today,
+  };
+
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
-  } = useForm<CreateBookFormData>({
+  } = useForm<CreateBookInput>({
     resolver: zodResolver(createBookSchema),
+    defaultValues,
   });
 
-  const onSubmit = async (data: CreateBookFormData) => {
+  const onSubmit = async (data: CreateBookInput) => {
     setError(null);
     setSuccess(null);
 
@@ -33,11 +43,14 @@ export default function CreateBookForm() {
         const result = await createBook({
           title: data.title,
           author: data.author,
-          publishedAt: new Date(data.publishedAt),
+          publishedAt: data.publishedAt,
         });
 
         setSuccess(result);
-        reset();
+        reset({
+          ...defaultValues,
+          publishedAt: today,
+        });
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "書籍の作成に失敗しました",
@@ -104,12 +117,27 @@ export default function CreateBookForm() {
           >
             出版日
           </label>
-          <input
-            type="date"
-            id="publishedAt"
-            {...register("publishedAt")}
-            disabled={isPending}
-            className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-black dark:text-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:opacity-50"
+          <Controller
+            name="publishedAt"
+            control={control}
+            render={({ field }) => (
+              <input
+                type="date"
+                id="publishedAt"
+                value={
+                  field.value
+                    ? field.value.toISOString().slice(0, 10)
+                    : todayStr
+                }
+                onChange={(e) => {
+                  field.onChange(
+                    e.target.value ? new Date(e.target.value) : undefined,
+                  );
+                }}
+                disabled={isPending}
+                className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-black dark:text-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:opacity-50"
+              />
+            )}
           />
           {errors.publishedAt && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">
