@@ -1,10 +1,10 @@
 "use server";
 
-import { PrismaBookRepository } from "@/adapter/repositories/prismaBookRepository";
-import { CreateUseCase } from "@/application/usecases/book/createUseCase";
-import { CreateRequestDto } from "@/application/dtos/book/createRequestDto";
-import { CreateResponseDto } from "@/application/dtos/book/createResponseDto";
-import { UuidGenerator } from "@/adapter/utils/uuidGenerator";
+import { PrismaBookRepository } from "@/server/adapter/repositories/prismaBookRepository";
+import { CreateUseCase } from "@/server/application/usecases/book/createUseCase";
+import { CreateRequestDto } from "@/server/application/dtos/book/createRequestDto";
+import { CreateResponseDto } from "@/server/application/dtos/book/createResponseDto";
+import { UuidGenerator } from "@/server/adapter/utils/uuidGenerator";
 import prisma from "@/lib/prisma";
 
 const bookRepository = new PrismaBookRepository(prisma);

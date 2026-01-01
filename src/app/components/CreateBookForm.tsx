@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { createBook } from "../actions/bookActions";
-import { CreateResponseDto } from "@/application/dtos/book/createResponseDto";
+import { CreateResponseDto } from "@/server/application/dtos/book/createResponseDto";
 
 export default function CreateBookForm() {
   const [isPending, startTransition] = useTransition();
