@@ -4,8 +4,8 @@ export class Book {
         private _title: string,
         private _author: string,
         private _publishedAt: Date,
-        private _createdAt: Date,
-        private _updatedAt: Date
+        private _createdAt: Date = new Date(),
+        private _updatedAt: Date = new Date(),
     ) {}
 
     get id(): string {
