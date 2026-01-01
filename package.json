@@ -8,7 +8,15 @@
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
-    "generate": "npx ts-node tools/generateFiles.ts"
+    "generate": "npx ts-node tools/generateFiles.ts",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down",
+    "db:logs": "docker-compose logs -f postgres",
+    "db:reset": "docker-compose down -v && docker-compose up -d",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:seed": "prisma db seed"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",

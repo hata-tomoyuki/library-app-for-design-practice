@@ -2,6 +2,41 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### データベースのセットアップ
+
+1. `.env`ファイルを作成し、以下の環境変数を設定してください：
+
+```env
+# Database
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/library_app?schema=public"
+
+# PostgreSQL Docker Container Settings
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=library_app
+POSTGRES_PORT=5432
+```
+
+2. Docker Composeを使用してPostgreSQLを起動します：
+
+```bash
+docker-compose up -d
+```
+
+3. Prismaマイグレーションを実行します：
+
+```bash
+npx prisma migrate dev
+```
+
+4. Prisma Clientを生成します：
+
+```bash
+npx prisma generate
+```
+
+### 開発サーバーの起動
+
 First, run the development server:
 
 ```bash
