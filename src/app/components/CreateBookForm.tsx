@@ -1,45 +1,43 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { createBook } from "../actions/bookActions";
 import { CreateResponseDto } from "@/server/application/dtos/book/createResponseDto";
+import {
+  createBookSchema,
+  type CreateBookFormData,
+} from "../schemas/bookSchema";
 
 export default function CreateBookForm() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<CreateResponseDto | null>(null);
 
-  const handleSubmit = async (formData: FormData) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CreateBookFormData>({
+    resolver: zodResolver(createBookSchema),
+  });
+
+  const onSubmit = async (data: CreateBookFormData) => {
     setError(null);
     setSuccess(null);
 
     startTransition(async () => {
       try {
-        const title = formData.get("title") as string;
-        const author = formData.get("author") as string;
-        const publishedAtStr = formData.get("publishedAt") as string;
-
-        if (!title || !author || !publishedAtStr) {
-          setError("すべてのフィールドを入力してください");
-          return;
-        }
-
-        const publishedAt = new Date(publishedAtStr);
-        if (isNaN(publishedAt.getTime())) {
-          setError("有効な日付を入力してください");
-          return;
-        }
-
         const result = await createBook({
-          title,
-          author,
-          publishedAt,
+          title: data.title,
+          author: data.author,
+          publishedAt: new Date(data.publishedAt),
         });
 
         setSuccess(result);
-        // フォームをリセット
-        const form = document.getElementById("book-form") as HTMLFormElement;
-        form?.reset();
+        reset();
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "書籍の作成に失敗しました",
@@ -54,7 +52,7 @@ export default function CreateBookForm() {
         書籍を登録
       </h2>
 
-      <form id="book-form" action={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label
             htmlFor="title"
@@ -65,12 +63,16 @@ export default function CreateBookForm() {
           <input
             type="text"
             id="title"
-            name="title"
-            required
+            {...register("title")}
             disabled={isPending}
             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-black dark:text-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:opacity-50"
             placeholder="書籍のタイトルを入力"
           />
+          {errors.title && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              {errors.title.message}
+            </p>
+          )}
         </div>
 
         <div>
@@ -83,12 +85,16 @@ export default function CreateBookForm() {
           <input
             type="text"
             id="author"
-            name="author"
-            required
+            {...register("author")}
             disabled={isPending}
             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-black dark:text-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:opacity-50"
             placeholder="著者名を入力"
           />
+          {errors.author && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              {errors.author.message}
+            </p>
+          )}
         </div>
 
         <div>
@@ -101,11 +107,15 @@ export default function CreateBookForm() {
           <input
             type="date"
             id="publishedAt"
-            name="publishedAt"
-            required
+            {...register("publishedAt")}
             disabled={isPending}
             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-black dark:text-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:opacity-50"
           />
+          {errors.publishedAt && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              {errors.publishedAt.message}
+            </p>
+          )}
         </div>
 
         {error && (
