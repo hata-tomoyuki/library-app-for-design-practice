@@ -1,33 +1,33 @@
-import { capitalize, lowercaseFirst } from '../utils';
+import { capitalize, lowercaseFirst } from "../utils";
 
 export function generateController(entityName: string, useCaseName: string) {
   const content = `
 import { Request, Response } from 'express';
 import { ${capitalize(
-    useCaseName
+    useCaseName,
   )}UseCaseInterface } from '../../application/usecases/${lowercaseFirst(
-    entityName
+    entityName,
   )}/${lowercaseFirst(useCaseName)}UseCaseInterface';
 import { ${capitalize(
-    useCaseName
+    useCaseName,
   )}RequestDto } from '../../application/dtos/${entityName}/${useCaseName}RequestDto'
 
 export class ${capitalize(entityName)}Controller {
   constructor(
     private readonly ${lowercaseFirst(useCaseName)}UseCase: ${capitalize(
-    useCaseName
-  )}UseCaseInterface
+      useCaseName,
+    )}UseCaseInterface
     // Add other useCase propaties as needed
   ) {}
 
   async ${lowercaseFirst(
-    useCaseName
+    useCaseName,
   )}(req: Request, res: Response): Promise<void> {
     try {
       const requestDto: ${capitalize(useCaseName)}RequestDto = {}
       const ${entityName} = await this.${lowercaseFirst(
-    useCaseName
-  )}UseCase.execute(requestDto);
+        useCaseName,
+      )}UseCase.execute(requestDto);
 
       // Add response status code
       res.status().json(${entityName});
@@ -38,7 +38,7 @@ export class ${capitalize(entityName)}Controller {
   }
 }
 `;
-  return content.trim() + '\n';
+  return content.trim() + "\n";
 }
 
 export function generatePrismaRepository(entityName: string) {
@@ -60,7 +60,7 @@ export class ${repositoryClassName} implements ${repositoryInterfaceClassName} {
 
   async create(${lowercaseEntityName}: ${capitalEntityName}): Promise<${capitalEntityName}> {
     const created${capitalize(
-      entityName
+      entityName,
     )} = await this.prisma.${lowercaseEntityName}.create({
       data: {
         // Add propaties
@@ -85,6 +85,5 @@ export class ${repositoryClassName} implements ${repositoryInterfaceClassName} {
   }
 }
 `;
-  return content.trim() + '\n';
+  return content.trim() + "\n";
 }
-

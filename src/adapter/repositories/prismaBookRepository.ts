@@ -1,6 +1,6 @@
-import { PrismaClient } from '../../../app/generated/prisma/client';
-import { Book } from '../../domain/entities/book';
-import { BookRepositoryInterface } from '../../domain/repositories/bookRepositoryInterface';
+import { PrismaClient } from "../../app/generated/prisma/client";
+import { Book } from "../../domain/entities/book";
+import { BookRepositoryInterface } from "../../domain/repositories/bookRepositoryInterface";
 
 export class PrismaBookRepository implements BookRepositoryInterface {
   constructor(private readonly prisma: PrismaClient) {}
@@ -24,7 +24,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
       createdBook.author,
       createdBook.publishedAt,
       createdBook.createdAt,
-      createdBook.updatedAt
+      createdBook.updatedAt,
     );
   }
 

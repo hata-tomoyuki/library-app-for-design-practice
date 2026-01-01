@@ -1,7 +1,7 @@
 import { capitalize, lowercaseFirst } from "../utils";
 
 export function generateEntity(name: string) {
-    const content = `
+  const content = `
 export class ${capitalize(name)} {
     constructor(
         private _id: string,
@@ -14,11 +14,11 @@ export class ${capitalize(name)} {
 }
     `;
 
-    return content.trim() + '\n';
+  return content.trim() + "\n";
 }
 
 export function generateRepositoryInterface(name: string) {
-    const content = `
+  const content = `
 import { ${capitalize(name)} } from "../entities/${lowercaseFirst(name)}";
 
 export interface ${capitalize(name)}RepositoryInterface {
@@ -28,6 +28,5 @@ export interface ${capitalize(name)}RepositoryInterface {
 }
     `;
 
-    return content.trim() + '\n';
+  return content.trim() + "\n";
 }
-

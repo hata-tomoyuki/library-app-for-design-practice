@@ -1,69 +1,69 @@
-import { capitalize, lowercaseFirst } from '../utils';
+import { capitalize, lowercaseFirst } from "../utils";
 
 export function generateUseCaseInterface(
   entityName: string,
-  useCaseName: string
+  useCaseName: string,
 ) {
   const content = `
 import { ${capitalize(
-    useCaseName
+    useCaseName,
   )}RequestDto } from '../../dtos/${lowercaseFirst(
-    entityName
+    entityName,
   )}/${lowercaseFirst(useCaseName)}RequestDto';
 import { ${capitalize(
-    useCaseName
+    useCaseName,
   )}ResponseDto } from '../../dtos/${lowercaseFirst(
-    entityName
+    entityName,
   )}/${lowercaseFirst(useCaseName)}ResponseDto';
 
 export interface ${capitalize(useCaseName)}UseCaseInterface {
   execute(requestDto: ${capitalize(useCaseName)}RequestDto): Promise<${capitalize(
-    useCaseName
+    useCaseName,
   )}ResponseDto>;
 }
 `;
-  return content.trim() + '\n';
+  return content.trim() + "\n";
 }
 
 export function generateUseCase(entityName: string, useCaseName: string) {
   const content = `
 import { ${capitalize(
-    entityName
+    entityName,
   )}RepositoryInterface } from '../../../domain/repositories/${lowercaseFirst(
-    entityName
+    entityName,
   )}RepositoryInterface';
 import { ${capitalize(
-    entityName
+    entityName,
   )} } from '../../../domain/entities/${lowercaseFirst(entityName)}';
 import { ${capitalize(
-    useCaseName
+    useCaseName,
   )}RequestDto } from '../../dtos/${lowercaseFirst(
-    entityName
+    entityName,
   )}/${lowercaseFirst(useCaseName)}RequestDto';
 import { ${capitalize(
-    useCaseName
+    useCaseName,
   )}ResponseDto } from '../../dtos/${lowercaseFirst(
-    entityName
+    entityName,
   )}/${lowercaseFirst(useCaseName)}ResponseDto';
 import { ${capitalize(useCaseName)}UseCaseInterface } from './${lowercaseFirst(
-    useCaseName
+    useCaseName,
   )}UseCaseInterface';
 
 export class ${capitalize(useCaseName)}UseCase implements ${capitalize(
-    useCaseName
+    useCaseName,
   )}UseCaseInterface {
   constructor(private readonly ${lowercaseFirst(
-    entityName
+    entityName,
   )}Repository: ${capitalize(entityName)}RepositoryInterface) {}
 
   async execute(requestDto: ${capitalize(
-    useCaseName
+    useCaseName,
   )}RequestDto): Promise<${capitalize(useCaseName)}ResponseDto> {
     // Implement usecase logic
   }
 }
 `;
-  return content.trim() + '\n';
+  return content.trim() + "\n";
 }
 
 export function generateRequestDto(useCaseName: string) {
@@ -72,7 +72,7 @@ export interface ${capitalize(useCaseName)}RequestDto {
   // Add properties for ${lowercaseFirst(useCaseName)} request
 }
 `;
-  return content.trim() + '\n';
+  return content.trim() + "\n";
 }
 
 export function generateResponseDto(useCaseName: string) {
@@ -81,6 +81,5 @@ export interface ${capitalize(useCaseName)}ResponseDto {
   // Add properties for ${lowercaseFirst(useCaseName)} response
 }
 `;
-  return content.trim() + '\n';
+  return content.trim() + "\n";
 }
-
