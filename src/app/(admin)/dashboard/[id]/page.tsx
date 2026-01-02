@@ -96,10 +96,10 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
                   一覧に戻る
                 </Link>
                 <Link
-                  href="/dashboard/create"
+                  href={`/dashboard/${id}/edit`}
                   className="px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
                 >
-                  新規登録
+                  編集
                 </Link>
               </div>
             </div>
