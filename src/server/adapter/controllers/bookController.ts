@@ -2,9 +2,15 @@ import { CreateUseCaseInterface } from "../../application/usecases/book/createUs
 import { CreateRequestDto } from "../../application/dtos/book/createRequestDto";
 import { CreateResponseDto } from "../../application/dtos/book/createResponseDto";
 import { createBookSchema, type CreateBookInput } from "@/schemas/bookSchema";
+import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
+import { FindByIdRequestDto } from "@/server/application/dtos/book/findByIdRequestDto";
+import { FindByIdUseCaseInterface } from "../../application/usecases/book/findByIdUseCaseInterface";
 
 export class BookController {
-  constructor(private readonly createUseCase: CreateUseCaseInterface) {}
+  constructor(
+    private readonly createUseCase: CreateUseCaseInterface,
+    private readonly findByIdUseCase: FindByIdUseCaseInterface,
+  ) {}
 
   /**
    * 書籍作成
@@ -22,4 +28,12 @@ export class BookController {
 
     return await this.createUseCase.execute(requestDto);
   }
+
+  /**
+   * 書籍をidで検索
+   */
+  async findById(input: FindByIdRequestDto): Promise<FindByIdResponseDto> {
+    return await this.findByIdUseCase.execute(input);
+  }
+
 }

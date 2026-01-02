@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// 1つのスキーマ（publishedAt は Date）
 export const createBookSchema = z.object({
   title: z
     .string()
