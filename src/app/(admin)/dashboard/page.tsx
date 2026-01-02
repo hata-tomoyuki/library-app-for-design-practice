@@ -39,8 +39,9 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {books.map((book) => (
-              <div
+              <Link
                 key={book.id}
+                href={`/dashboard/${books[0].id}`}
                 className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
               >
                 <h2 className="text-xl font-bold text-black dark:text-zinc-50 mb-2 line-clamp-2">
@@ -59,7 +60,7 @@ export default async function DashboardPage() {
                     {new Date(book.createdAt).toLocaleDateString("ja-JP")}
                   </p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
