@@ -26,7 +26,7 @@ async function generateEntityLayer() {
     },
   ]);
 
-  const basePath = path.join(__dirname, "..", "src", "domain");
+  const basePath = path.join(__dirname, "..", "src", "server", "domain");
 
   const entityContent = generateEntity(entityName);
   writeFile(
@@ -59,7 +59,7 @@ async function generateUseCaseLayer() {
     },
   ]);
 
-  const basePath = path.join(__dirname, "..", "src", "application");
+  const basePath = path.join(__dirname, "..", "src", "server", "application");
 
   const useCaseInterfaceContent = generateUseCaseInterface(
     entityName,
@@ -123,7 +123,7 @@ async function generateInterfaceAdapterLayer() {
     },
   ]);
 
-  const basePath = path.join(__dirname, "..", "src", "adapter");
+  const basePath = path.join(__dirname, "..", "src", "server", "adapter");
 
   const controllerContent = generateController(entityName, useCaseName);
   writeFile(
@@ -155,7 +155,7 @@ async function generateInfrastructureLayer() {
     },
   ]);
 
-  const basePath = path.join(__dirname, "..", "src", "infrastructure");
+  const basePath = path.join(__dirname, "..", "src", "server", "infrastructure");
 
   const routerContent = generateRouter(entityName);
   writeFile(
