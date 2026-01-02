@@ -7,12 +7,14 @@ import { CreateResponseDto } from "@/server/application/dtos/book/createResponse
 import { UuidGenerator } from "@/server/adapter/utils/uuidGenerator";
 import { BookController } from "@/server/adapter/controllers/bookController";
 import { type CreateBookInput } from "@/schemas/bookSchema";
+import { FindByIdUseCase } from "@/server/application/usecases/book/findByIdUseCase";
 import prisma from "@/lib/prisma";
 
 const bookRepository = new PrismaBookRepository(prisma);
 const uuidGenerator = new UuidGenerator();
 const createUseCase = new CreateUseCase(bookRepository, uuidGenerator);
-const bookController = new BookController(createUseCase);
+const findByIdUseCase = new FindByIdUseCase(bookRepository);
+const bookController = new BookController(createUseCase, findByIdUseCase);
 
 export async function createBook(
   input: CreateBookInput,
