@@ -6,7 +6,10 @@ import { CreateUseCase } from "@/server/application/usecases/book/createUseCase"
 import { CreateResponseDto } from "@/server/application/dtos/book/createResponseDto";
 import { UuidGenerator } from "@/server/adapter/utils/uuidGenerator";
 import { BookController } from "@/server/adapter/controllers/bookController";
-import { type CreateBookInput } from "@/schemas/bookSchema";
+import {
+  type CreateBookInput,
+  type UpdateBookInput,
+} from "@/schemas/bookSchema";
 import { FindByIdUseCase } from "@/server/application/usecases/book/findByIdUseCase";
 import { FindAllUseCase } from "@/server/application/usecases/book/findAllUseCase";
 import { FindAllResponseDto } from "@/server/application/dtos/book/findAllResponseDto";
@@ -14,6 +17,7 @@ import { FindAllRequestDto } from "@/server/application/dtos/book/findAllRequest
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
 import { FindByIdRequestDto } from "@/server/application/dtos/book/findByIdRequestDto";
 import { UpdateUseCase } from "@/server/application/usecases/book/updateUseCase";
+import { UpdateResponseDto } from "@/server/application/dtos/book/updateResponseDto";
 import prisma from "@/lib/prisma";
 
 const bookRepository = new PrismaBookRepository(prisma);
@@ -69,15 +73,10 @@ export async function findBookById(id: string): Promise<FindByIdResponseDto> {
 }
 
 export async function updateBook(
-  id: string,
-  input: CreateBookInput,
-): Promise<CreateResponseDto> {
+  input: UpdateBookInput,
+): Promise<UpdateResponseDto> {
   try {
-    const requestDto = {
-      id,
-      ...input,
-    };
-    return await bookController.update(requestDto);
+    return await bookController.update(input);
   } catch (error) {
     // Zodのバリデーションエラーを処理
     if (error instanceof z.ZodError) {
