@@ -13,6 +13,7 @@ import { FindAllResponseDto } from "@/server/application/dtos/book/findAllRespon
 import { FindAllRequestDto } from "@/server/application/dtos/book/findAllRequestDto";
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
 import { FindByIdRequestDto } from "@/server/application/dtos/book/findByIdRequestDto";
+import { UpdateUseCase } from "@/server/application/usecases/book/updateUseCase";
 import prisma from "@/lib/prisma";
 
 const bookRepository = new PrismaBookRepository(prisma);
@@ -20,10 +21,12 @@ const uuidGenerator = new UuidGenerator();
 const createUseCase = new CreateUseCase(bookRepository, uuidGenerator);
 const findByIdUseCase = new FindByIdUseCase(bookRepository);
 const findAllUseCase = new FindAllUseCase(bookRepository);
+const updateUseCase = new UpdateUseCase(bookRepository);
 const bookController = new BookController(
   createUseCase,
   findByIdUseCase,
   findAllUseCase,
+  updateUseCase,
 );
 
 export async function createBook(
@@ -62,5 +65,29 @@ export async function findBookById(id: string): Promise<FindByIdResponseDto> {
   } catch (error) {
     console.error("書籍の取得に失敗しました:", error);
     throw error;
+  }
+}
+
+export async function updateBook(
+  id: string,
+  input: CreateBookInput,
+): Promise<CreateResponseDto> {
+  try {
+    const requestDto = {
+      id,
+      ...input,
+    };
+    return await bookController.update(requestDto);
+  } catch (error) {
+    // Zodのバリデーションエラーを処理
+    if (error instanceof z.ZodError) {
+      const errorMessages = error.issues
+        .map((issue) => issue.message)
+        .join(", ");
+      throw new Error(`バリデーションエラー: ${errorMessages}`);
+    }
+
+    console.error("書籍の更新に失敗しました:", error);
+    throw new Error("書籍の更新に失敗しました");
   }
 }
