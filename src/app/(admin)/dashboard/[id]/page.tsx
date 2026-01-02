@@ -101,6 +101,12 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
                 >
                   編集
                 </Link>
+                <Link
+                  href={`/dashboard/books/${id}/delete`}
+                  className="px-6 py-3 bg-red-600 dark:bg-red-700 text-white font-medium rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-colors"
+                >
+                  削除
+                </Link>
               </div>
             </div>
           </div>

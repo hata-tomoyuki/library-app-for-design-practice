@@ -18,6 +18,8 @@ import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResp
 import { FindByIdRequestDto } from "@/server/application/dtos/book/findByIdRequestDto";
 import { UpdateUseCase } from "@/server/application/usecases/book/updateUseCase";
 import { UpdateResponseDto } from "@/server/application/dtos/book/updateResponseDto";
+import { DeleteUseCase } from "@/server/application/usecases/book/deleteUseCase";
+import { DeleteResponseDto } from "@/server/application/dtos/book/deleteResponseDto";
 import prisma from "@/lib/prisma";
 
 const bookRepository = new PrismaBookRepository(prisma);
@@ -26,11 +28,13 @@ const createUseCase = new CreateUseCase(bookRepository, uuidGenerator);
 const findByIdUseCase = new FindByIdUseCase(bookRepository);
 const findAllUseCase = new FindAllUseCase(bookRepository);
 const updateUseCase = new UpdateUseCase(bookRepository);
+const deleteUseCase = new DeleteUseCase(bookRepository);
 const bookController = new BookController(
   createUseCase,
   findByIdUseCase,
   findAllUseCase,
   updateUseCase,
+  deleteUseCase,
 );
 
 export async function createBook(
@@ -88,5 +92,14 @@ export async function updateBook(
 
     console.error("書籍の更新に失敗しました:", error);
     throw new Error("書籍の更新に失敗しました");
+  }
+}
+
+export async function deleteBook(id: string): Promise<DeleteResponseDto> {
+  try {
+    return await bookController.delete(id);
+  } catch (error) {
+    console.error("書籍の削除に失敗しました:", error);
+    throw error;
   }
 }
