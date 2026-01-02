@@ -4,10 +4,12 @@ export default function DashboardLayout({
   children,
   sidebar,
   delete: deleteSlot,
+  edit: editSlot,
 }: {
   children: ReactNode;
   sidebar: ReactNode;
   delete: ReactNode;
+  edit: ReactNode;
 }) {
   return (
     <div className="flex min-h-screen">
@@ -15,6 +17,7 @@ export default function DashboardLayout({
       <main className="flex-1 relative">
         {children}
         {deleteSlot}
+        {editSlot}
       </main>
     </div>
   );
