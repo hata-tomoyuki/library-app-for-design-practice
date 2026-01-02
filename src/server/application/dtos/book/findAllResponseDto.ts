@@ -6,5 +6,3 @@ export interface FindAllResponseDto {
   createdAt: Date;
   updatedAt: Date;
 }
-
-export type FindAllResponseDtoArray = FindAllResponseDto[];
