@@ -1,8 +1,8 @@
-import { BookRepositoryInterface } from '../../../domain/repositories/bookRepositoryInterface';
-import { Book } from '../../../domain/entities/book';
-import { FindByIdRequestDto } from '../../dtos/book/findByIdRequestDto';
-import { FindByIdResponseDto } from '../../dtos/book/findByIdResponseDto';
-import { FindByIdUseCaseInterface } from './findByIdUseCaseInterface';
+import { BookRepositoryInterface } from "../../../domain/repositories/bookRepositoryInterface";
+import { Book } from "../../../domain/entities/book";
+import { FindByIdRequestDto } from "../../dtos/book/findByIdRequestDto";
+import { FindByIdResponseDto } from "../../dtos/book/findByIdResponseDto";
+import { FindByIdUseCaseInterface } from "./findByIdUseCaseInterface";
 
 export class FindByIdUseCase implements FindByIdUseCaseInterface {
   constructor(private readonly bookRepository: BookRepositoryInterface) {}
@@ -13,7 +13,7 @@ export class FindByIdUseCase implements FindByIdUseCaseInterface {
     const foundBook = await this.bookRepository.findById(id);
 
     if (!foundBook) {
-      throw new Error('書籍が見つかりませんでした');
+      throw new Error("書籍が見つかりませんでした");
     }
 
     return {
@@ -23,6 +23,6 @@ export class FindByIdUseCase implements FindByIdUseCaseInterface {
       publishedAt: foundBook.publishedAt,
       createdAt: foundBook.createdAt,
       updatedAt: foundBook.updatedAt,
-    }
+    };
   }
 }

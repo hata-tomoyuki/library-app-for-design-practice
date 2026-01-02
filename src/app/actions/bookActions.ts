@@ -16,7 +16,11 @@ const uuidGenerator = new UuidGenerator();
 const createUseCase = new CreateUseCase(bookRepository, uuidGenerator);
 const findByIdUseCase = new FindByIdUseCase(bookRepository);
 const findAllUseCase = new FindAllUseCase(bookRepository);
-const bookController = new BookController(createUseCase, findByIdUseCase, findAllUseCase);
+const bookController = new BookController(
+  createUseCase,
+  findByIdUseCase,
+  findAllUseCase,
+);
 
 export async function createBook(
   input: CreateBookInput,

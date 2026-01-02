@@ -1,7 +1,7 @@
-import { BookRepositoryInterface } from '../../../domain/repositories/bookRepositoryInterface';
-import { FindAllRequestDto } from '../../dtos/book/findAllRequestDto';
-import { FindAllResponseDto } from '../../dtos/book/findAllResponseDto';
-import { FindAllUseCaseInterface } from './findAllUseCaseInterface';
+import { BookRepositoryInterface } from "../../../domain/repositories/bookRepositoryInterface";
+import { FindAllRequestDto } from "../../dtos/book/findAllRequestDto";
+import { FindAllResponseDto } from "../../dtos/book/findAllResponseDto";
+import { FindAllUseCaseInterface } from "./findAllUseCaseInterface";
 
 export class FindAllUseCase implements FindAllUseCaseInterface {
   constructor(private readonly bookRepository: BookRepositoryInterface) {}

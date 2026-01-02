@@ -46,5 +46,4 @@ export class BookController {
   async findAll(input: FindAllRequestDto): Promise<FindAllResponseDto[]> {
     return await this.findAllUseCase.execute(input);
   }
-
 }

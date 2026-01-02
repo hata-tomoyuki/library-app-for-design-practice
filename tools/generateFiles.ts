@@ -155,7 +155,13 @@ async function generateInfrastructureLayer() {
     },
   ]);
 
-  const basePath = path.join(__dirname, "..", "src", "server", "infrastructure");
+  const basePath = path.join(
+    __dirname,
+    "..",
+    "src",
+    "server",
+    "infrastructure",
+  );
 
   const routerContent = generateRouter(entityName);
   writeFile(
