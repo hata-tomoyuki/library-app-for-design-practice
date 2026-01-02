@@ -16,6 +16,7 @@ import { FindAllUseCaseInterface } from "../../application/usecases/book/findAll
 import { UpdateUseCaseInterface } from "@/server/application/usecases/book/updateUseCaseInterface";
 import { UpdateResponseDto } from "@/server/application/dtos/book/updateResponseDto";
 import { UpdateRequestDto } from "@/server/application/dtos/book/updateRequestDto";
+import { DeleteUseCaseInterface } from "@/server/application/usecases/book/deleteUseCaseInterface";
 
 export class BookController {
   constructor(
@@ -23,6 +24,7 @@ export class BookController {
     private readonly findByIdUseCase: FindByIdUseCaseInterface,
     private readonly findAllUseCase: FindAllUseCaseInterface,
     private readonly updateUseCase: UpdateUseCaseInterface,
+    private readonly deleteUseCase: DeleteUseCaseInterface,
   ) {}
 
   /**
@@ -73,5 +75,12 @@ export class BookController {
     };
 
     return await this.updateUseCase.execute(requestDto);
+  }
+
+  /**
+   * 書籍を削除
+   */
+  async delete(id: string) {
+    return await this.deleteUseCase.execute({ id });
   }
 }

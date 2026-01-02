@@ -85,4 +85,10 @@ export class PrismaBookRepository implements BookRepositoryInterface {
       updatedBook.updatedAt,
     );
   }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.book.delete({
+      where: { id },
+    });
+  }
 }
