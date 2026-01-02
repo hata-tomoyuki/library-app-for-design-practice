@@ -14,6 +14,7 @@ export class BookController {
     private readonly createUseCase: CreateUseCaseInterface,
     private readonly findByIdUseCase: FindByIdUseCaseInterface,
     private readonly findAllUseCase: FindAllUseCaseInterface,
+    private readonly updateUseCase: CreateUseCaseInterface,
   ) {}
 
   /**
@@ -45,5 +46,20 @@ export class BookController {
    */
   async findAll(input: FindAllRequestDto): Promise<FindAllResponseDto[]> {
     return await this.findAllUseCase.execute(input);
+  }
+
+  /**
+   * 書籍を更新
+   */
+  async update(input: CreateBookInput): Promise<CreateResponseDto> {
+    const validatedData = createBookSchema.parse(input);
+
+    const requestDto: CreateRequestDto = {
+      title: validatedData.title,
+      author: validatedData.author,
+      publishedAt: validatedData.publishedAt,
+    };
+
+    return await this.updateUseCase.execute(requestDto);
   }
 }
