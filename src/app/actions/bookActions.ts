@@ -11,6 +11,8 @@ import { FindByIdUseCase } from "@/server/application/usecases/book/findByIdUseC
 import { FindAllUseCase } from "@/server/application/usecases/book/findAllUseCase";
 import { FindAllResponseDto } from "@/server/application/dtos/book/findAllResponseDto";
 import { FindAllRequestDto } from "@/server/application/dtos/book/findAllRequestDto";
+import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
+import { FindByIdRequestDto } from "@/server/application/dtos/book/findByIdRequestDto";
 import prisma from "@/lib/prisma";
 
 const bookRepository = new PrismaBookRepository(prisma);
@@ -50,5 +52,15 @@ export async function findAllBooks(): Promise<FindAllResponseDto[]> {
   } catch (error) {
     console.error("書籍一覧の取得に失敗しました:", error);
     throw new Error("書籍一覧の取得に失敗しました");
+  }
+}
+
+export async function findBookById(id: string): Promise<FindByIdResponseDto> {
+  try {
+    const requestDto: FindByIdRequestDto = { id };
+    return await bookController.findById(requestDto);
+  } catch (error) {
+    console.error("書籍の取得に失敗しました:", error);
+    throw error;
   }
 }
