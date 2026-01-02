@@ -3,21 +3,18 @@ import { ReactNode } from "react";
 export default function DashboardLayout({
   children,
   sidebar,
-  delete: deleteSlot,
-  edit: editSlot,
+  modal,
 }: {
   children: ReactNode;
   sidebar: ReactNode;
-  delete: ReactNode;
-  edit: ReactNode;
+  modal: ReactNode;
 }) {
   return (
     <div className="flex min-h-screen">
       {sidebar}
       <main className="flex-1 relative">
         {children}
-        {deleteSlot}
-        {editSlot}
+        {modal}
       </main>
     </div>
   );
