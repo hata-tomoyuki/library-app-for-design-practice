@@ -9,6 +9,8 @@ import { BookController } from "@/server/adapter/controllers/bookController";
 import { type CreateBookInput } from "@/schemas/bookSchema";
 import { FindByIdUseCase } from "@/server/application/usecases/book/findByIdUseCase";
 import { FindAllUseCase } from "@/server/application/usecases/book/findAllUseCase";
+import { FindAllResponseDto } from "@/server/application/dtos/book/findAllResponseDto";
+import { FindAllRequestDto } from "@/server/application/dtos/book/findAllRequestDto";
 import prisma from "@/lib/prisma";
 
 const bookRepository = new PrismaBookRepository(prisma);
@@ -38,5 +40,15 @@ export async function createBook(
 
     console.error("書籍の作成に失敗しました:", error);
     throw new Error("書籍の作成に失敗しました");
+  }
+}
+
+export async function findAllBooks(): Promise<FindAllResponseDto[]> {
+  try {
+    const requestDto: FindAllRequestDto = {};
+    return await bookController.findAll(requestDto);
+  } catch (error) {
+    console.error("書籍一覧の取得に失敗しました:", error);
+    throw new Error("書籍一覧の取得に失敗しました");
   }
 }
