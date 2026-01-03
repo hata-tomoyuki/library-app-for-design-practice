@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { deleteOldImage } from "@/lib/uploadthing-utils";
 import { PrismaBookRepository } from "@/server/adapter/repositories/prismaBookRepository";
 import { CreateUseCase } from "@/server/application/usecases/book/createUseCase";
 import { CreateResponseDto } from "@/server/application/dtos/book/createResponseDto";
@@ -78,9 +79,17 @@ export async function findBookById(id: string): Promise<FindByIdResponseDto> {
 
 export async function updateBook(
   input: UpdateBookInput,
+  oldImageUrl?: string,
 ): Promise<UpdateResponseDto> {
   try {
-    return await bookController.update(input);
+    const result = await bookController.update(input);
+
+    // 新しい画像がアップロードされた場合、古い画像を削除
+    if (input.imageUrl && oldImageUrl && input.imageUrl !== oldImageUrl) {
+      await deleteOldImage(oldImageUrl);
+    }
+
+    return result;
   } catch (error) {
     // Zodのバリデーションエラーを処理
     if (error instanceof z.ZodError) {

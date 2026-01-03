@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,8 @@ import {
   type UpdateBookInput,
 } from "../../schemas/bookSchema";
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
+import { useUploadThing } from "@/lib/uploadthing";
+import Image from "next/image";
 
 interface UpdateBookModalProps {
   book: FindByIdResponseDto;
@@ -21,6 +23,18 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<UpdateResponseDto | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { startUpload, isUploading } = useUploadThing("imageUploader", {
+    onClientUploadComplete: () => {
+      // アップロード完了時の処理はstartUploadの結果で処理
+    },
+    onUploadError: (error: Error) => {
+      throw new Error(`画像のアップロードに失敗しました: ${error.message}`);
+    },
+  });
 
   const publishedAtDate = new Date(book.publishedAt);
   const publishedAtStr = publishedAtDate.toISOString().slice(0, 10);
@@ -31,17 +45,43 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
     author: book.author,
     publishedAt: publishedAtDate,
     isAvailable: book.isAvailable,
+    imageUrl: book.imageUrl,
   };
 
   const {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<UpdateBookInput>({
     resolver: zodResolver(updateBookSchema),
     defaultValues,
   });
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      // プレビュー用のURLを作成
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      // 一時的にクリアしてバリデーションを通過させる
+      setValue("imageUrl", undefined, { shouldValidate: false });
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setValue("imageUrl", undefined);
+  };
 
   const handleCancel = () => {
     router.back();
@@ -50,21 +90,50 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
   const onSubmit = async (data: UpdateBookInput) => {
     setError(null);
     setSuccess(null);
+    console.log("更新データ:", data);
 
     startTransition(async () => {
       try {
-        const result = await updateBook({
-          id: data.id,
-          title: data.title,
-          author: data.author,
-          publishedAt: data.publishedAt,
-          isAvailable: data.isAvailable,
-        });
+        let imageUrl: string | undefined = undefined;
+
+        // 新しいファイルが選択されている場合、アップロードを実行
+        if (selectedFile) {
+          const uploadResult = await startUpload([selectedFile]);
+          if (uploadResult && uploadResult[0]) {
+            imageUrl = uploadResult[0].url;
+          } else {
+            throw new Error("画像のアップロードに失敗しました");
+          }
+        } else {
+          // ファイルが選択されていない場合、既存の画像URLを使用
+          imageUrl = data.imageUrl;
+        }
+
+        const result = await updateBook(
+          {
+            id: data.id,
+            title: data.title,
+            author: data.author,
+            publishedAt: data.publishedAt,
+            isAvailable: data.isAvailable,
+            imageUrl,
+          },
+          // 新しい画像がアップロードされた場合のみ、古い画像を削除
+          selectedFile ? book.imageUrl : undefined,
+        );
 
         setSuccess(result);
+        setSelectedFile(null);
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl);
+          setPreviewUrl(null);
+        }
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
         // 更新成功後、詳細ページにリダイレクト
         setTimeout(() => {
-          router.push(`/dashboard/${result.id}`);
+          router.push(`/dashboard/books/${result.id}`);
           router.refresh();
         }, 1500);
       } catch (err) {
@@ -186,6 +255,96 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                画像
+              </label>
+              <div className="space-y-4">
+                {previewUrl ? (
+                  <div className="relative">
+                    <Image
+                      src={previewUrl}
+                      alt="選択された画像のプレビュー"
+                      width={200}
+                      height={200}
+                      className="rounded-lg object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+                      disabled={isPending || isUploading}
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ) : book.imageUrl ? (
+                  <div className="relative">
+                    <Image
+                      src={book.imageUrl}
+                      alt="現在の画像"
+                      width={200}
+                      height={200}
+                      className="rounded-lg object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setValue("imageUrl", undefined);
+                        fileInputRef.current?.click();
+                      }}
+                      className="absolute top-2 right-2 p-1 bg-zinc-600 text-white rounded-full hover:bg-zinc-700 transition-colors"
+                      disabled={isPending || isUploading}
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ) : null}
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    disabled={isPending || isUploading}
+                    className="block w-full text-sm text-zinc-700 dark:text-zinc-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-zinc-900 dark:file:bg-zinc-50 file:text-white dark:file:text-black hover:file:bg-zinc-800 dark:hover:file:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
+                  <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                    画像は書籍更新時にアップロードされます
+                  </p>
+                </div>
+              </div>
+              {errors.imageUrl && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {errors.imageUrl.message}
+                </p>
+              )}
+            </div>
+
+            <div>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -226,6 +385,18 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
                     {new Date(success.publishedAt).toLocaleDateString("ja-JP")}
                   </p>
                   <p>貸出可能: {success.isAvailable ? "はい" : "いいえ"}</p>
+                  {success.imageUrl && (
+                    <div className="mt-2">
+                      <p>画像:</p>
+                      <Image
+                        src={success.imageUrl}
+                        alt="更新された画像"
+                        width={100}
+                        height={100}
+                        className="rounded-lg object-cover mt-1"
+                      />
+                    </div>
+                  )}
                 </div>
                 <p className="text-xs text-green-700 dark:text-green-300 mt-2">
                   詳細ページにリダイレクトします...
@@ -244,10 +415,14 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
               </button>
               <button
                 type="submit"
-                disabled={isPending}
+                disabled={isPending || isUploading}
                 className="flex-1 px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-md hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isPending ? "更新中..." : "書籍を更新"}
+                {isPending || isUploading
+                  ? isUploading
+                    ? "画像をアップロード中..."
+                    : "更新中..."
+                  : "書籍を更新"}
               </button>
             </div>
           </form>
