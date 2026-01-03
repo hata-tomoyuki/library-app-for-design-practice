@@ -1,4 +1,4 @@
-import CreateBookForm from "./components/CreateBookForm";
+import CreateBookForm from "./(admin)/dashboard/books/create/_components/CreateBookForm";
 
 export default function Home() {
   return (

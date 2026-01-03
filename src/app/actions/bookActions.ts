@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { deleteOldImage } from "@/lib/uploadthing-utils";
 import { PrismaBookRepository } from "@/server/adapter/repositories/prismaBookRepository";
 import { CreateUseCase } from "@/server/application/usecases/book/createUseCase";
-import { CreateResponseDto } from "@/server/application/dtos/book/createResponseDto";
 import { UuidGenerator } from "@/server/adapter/utils/uuidGenerator";
 import { BookController } from "@/server/adapter/controllers/bookController";
 import {

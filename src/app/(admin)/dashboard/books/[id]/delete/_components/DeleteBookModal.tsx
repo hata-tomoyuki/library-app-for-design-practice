@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { redirect, useRouter } from "next/navigation";
-import { deleteBook } from "../actions/bookActions";
+import { useRouter } from "next/navigation";
+import { deleteBook } from "@/app/actions/bookActions";
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
 
 interface DeleteBookModalProps {

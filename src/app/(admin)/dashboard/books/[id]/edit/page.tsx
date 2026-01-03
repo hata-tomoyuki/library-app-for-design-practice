@@ -1,6 +1,6 @@
 import { findBookById } from "@/app/actions/bookActions";
-import UpdateBookModal from "@/app/components/UpdateBookModal";
 import { notFound } from "next/navigation";
+import UpdateBookModal from "./_components/UpdateBookModal";
 
 export default async function EditPage({
   params,

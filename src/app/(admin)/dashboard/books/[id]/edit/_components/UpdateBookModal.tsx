@@ -4,12 +4,8 @@ import { useState, useTransition, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { updateBook } from "../actions/bookActions";
-import { UpdateResponseDto } from "@/server/application/dtos/book/updateResponseDto";
-import {
-  updateBookSchema,
-  type UpdateBookInput,
-} from "../../schemas/bookSchema";
+import { updateBook } from "@/app/actions/bookActions";
+import { updateBookSchema, type UpdateBookInput } from "@/schemas/bookSchema";
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";

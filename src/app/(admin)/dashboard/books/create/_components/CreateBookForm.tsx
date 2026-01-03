@@ -3,12 +3,8 @@
 import { useState, useTransition, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createBook } from "../actions/bookActions";
-import { CreateResponseDto } from "@/server/application/dtos/book/createResponseDto";
-import {
-  createBookSchema,
-  type CreateBookInput,
-} from "../../schemas/bookSchema";
+import { createBook } from "@/app/actions/bookActions";
+import { createBookSchema, type CreateBookInput } from "@/schemas/bookSchema";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
 
