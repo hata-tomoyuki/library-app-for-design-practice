@@ -15,7 +15,6 @@ import Image from "next/image";
 export default function CreateBookForm() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<CreateResponseDto | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -75,7 +74,6 @@ export default function CreateBookForm() {
 
   const onSubmit = async (data: CreateBookInput) => {
     setError(null);
-    setSuccess(null);
 
     startTransition(async () => {
       try {
@@ -99,7 +97,6 @@ export default function CreateBookForm() {
           imageUrl,
         });
 
-        setSuccess(result);
         setSelectedFile(null);
         if (previewUrl) {
           URL.revokeObjectURL(previewUrl);
@@ -287,35 +284,6 @@ export default function CreateBookForm() {
         {error && (
           <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
             <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
-          </div>
-        )}
-
-        {success && (
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
-            <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
-              書籍が正常に登録されました！
-            </p>
-            <div className="text-xs text-green-700 dark:text-green-300 space-y-1">
-              <p>ID: {success.id}</p>
-              <p>タイトル: {success.title}</p>
-              <p>著者: {success.author}</p>
-              <p>
-                出版日:{" "}
-                {new Date(success.publishedAt).toLocaleDateString("ja-JP")}
-              </p>
-              {success.imageUrl && (
-                <div className="mt-2">
-                  <p>画像:</p>
-                  <Image
-                    src={success.imageUrl}
-                    alt="アップロードされた画像"
-                    width={100}
-                    height={100}
-                    className="rounded-lg object-cover mt-1"
-                  />
-                </div>
-              )}
-            </div>
           </div>
         )}
 

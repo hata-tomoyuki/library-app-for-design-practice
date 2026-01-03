@@ -20,7 +20,6 @@ export default function UpdateBookForm({ book }: UpdateBookFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<UpdateResponseDto | null>(null);
 
   const publishedAtDate = new Date(book.publishedAt);
   const publishedAtStr = publishedAtDate.toISOString().slice(0, 10);
@@ -30,6 +29,8 @@ export default function UpdateBookForm({ book }: UpdateBookFormProps) {
     title: book.title,
     author: book.author,
     publishedAt: publishedAtDate,
+    isAvailable: book.isAvailable,
+    imageUrl: book.imageUrl,
   };
 
   const {
@@ -44,7 +45,6 @@ export default function UpdateBookForm({ book }: UpdateBookFormProps) {
 
   const onSubmit = async (data: UpdateBookInput) => {
     setError(null);
-    setSuccess(null);
 
     startTransition(async () => {
       try {
@@ -53,13 +53,9 @@ export default function UpdateBookForm({ book }: UpdateBookFormProps) {
           title: data.title,
           author: data.author,
           publishedAt: data.publishedAt,
+          isAvailable: data.isAvailable,
+          imageUrl: data.imageUrl,
         });
-
-        setSuccess(result);
-        // 更新成功後、詳細ページにリダイレクト
-        setTimeout(() => {
-          router.push(`/dashboard/${result.id}`);
-        }, 1500);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "書籍の更新に失敗しました",
@@ -158,26 +154,6 @@ export default function UpdateBookForm({ book }: UpdateBookFormProps) {
         {error && (
           <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
             <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
-          </div>
-        )}
-
-        {success && (
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
-            <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
-              書籍が正常に更新されました！
-            </p>
-            <div className="text-xs text-green-700 dark:text-green-300 space-y-1">
-              <p>ID: {success.id}</p>
-              <p>タイトル: {success.title}</p>
-              <p>著者: {success.author}</p>
-              <p>
-                出版日:{" "}
-                {new Date(success.publishedAt).toLocaleDateString("ja-JP")}
-              </p>
-            </div>
-            <p className="text-xs text-green-700 dark:text-green-300 mt-2">
-              詳細ページにリダイレクトします...
-            </p>
           </div>
         )}
 
