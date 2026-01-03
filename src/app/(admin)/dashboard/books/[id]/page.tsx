@@ -13,6 +13,9 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   let book;
   try {
     book = await findBookById(id);
+    if (!book) {
+      notFound();
+    }
   } catch (error) {
     notFound();
   }
