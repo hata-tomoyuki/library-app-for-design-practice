@@ -22,7 +22,6 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<UpdateResponseDto | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -89,8 +88,6 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
 
   const onSubmit = async (data: UpdateBookInput) => {
     setError(null);
-    setSuccess(null);
-    console.log("更新データ:", data);
 
     startTransition(async () => {
       try {
@@ -109,7 +106,7 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
           imageUrl = data.imageUrl;
         }
 
-        const result = await updateBook(
+        await updateBook(
           {
             id: data.id,
             title: data.title,
@@ -122,7 +119,6 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
           selectedFile ? book.imageUrl : undefined,
         );
 
-        setSuccess(result);
         setSelectedFile(null);
         if (previewUrl) {
           URL.revokeObjectURL(previewUrl);
@@ -131,11 +127,6 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
-        // 更新成功後、詳細ページにリダイレクト
-        setTimeout(() => {
-          router.push(`/dashboard/books/${result.id}`);
-          router.refresh();
-        }, 1500);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "書籍の更新に失敗しました",
@@ -145,30 +136,31 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl mx-4 bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-h-[90vh] overflow-y-auto">
-        {/* 閉じるボタン */}
-        <button
-          onClick={handleCancel}
-          className="absolute top-4 right-4 p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
-          disabled={isPending}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-
-        <div className="p-8">
+    <div className="min-h-screen bg-zinc-50 dark:bg-black p-8">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-8">
+          <div className="mb-6">
+            <button
+              onClick={handleCancel}
+              className="inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+              disabled={isPending}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              戻る
+            </button>
+          </div>
           <h2 className="text-2xl font-bold mb-6 text-black dark:text-zinc-50">
             書籍を更新
           </h2>
@@ -367,39 +359,6 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
               <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
                 <p className="text-sm text-red-800 dark:text-red-200">
                   {error}
-                </p>
-              </div>
-            )}
-
-            {success && (
-              <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
-                <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">
-                  書籍が正常に更新されました！
-                </p>
-                <div className="text-xs text-green-700 dark:text-green-300 space-y-1">
-                  <p>ID: {success.id}</p>
-                  <p>タイトル: {success.title}</p>
-                  <p>著者: {success.author}</p>
-                  <p>
-                    出版日:{" "}
-                    {new Date(success.publishedAt).toLocaleDateString("ja-JP")}
-                  </p>
-                  <p>貸出可能: {success.isAvailable ? "はい" : "いいえ"}</p>
-                  {success.imageUrl && (
-                    <div className="mt-2">
-                      <p>画像:</p>
-                      <Image
-                        src={success.imageUrl}
-                        alt="更新された画像"
-                        width={100}
-                        height={100}
-                        className="rounded-lg object-cover mt-1"
-                      />
-                    </div>
-                  )}
-                </div>
-                <p className="text-xs text-green-700 dark:text-green-300 mt-2">
-                  詳細ページにリダイレクトします...
                 </p>
               </div>
             )}

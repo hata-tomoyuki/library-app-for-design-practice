@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { redirect, useRouter } from "next/navigation";
 import { deleteBook } from "../actions/bookActions";
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
 
@@ -11,7 +11,6 @@ interface DeleteBookModalProps {
 
 export default function DeleteBookModal({ book }: DeleteBookModalProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [confirmationText, setConfirmationText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -29,49 +28,43 @@ export default function DeleteBookModal({ book }: DeleteBookModalProps) {
     setError(null);
     setIsDeleting(true);
 
-    startTransition(async () => {
-      try {
-        await deleteBook(book.id);
-        // 削除成功後、一覧ページにリダイレクト
-        router.push("/dashboard");
-        router.refresh();
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "書籍の削除に失敗しました",
-        );
-        setIsDeleting(false);
-      }
-    });
+    try {
+      await deleteBook(book.id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "書籍の削除に失敗しました");
+      setIsDeleting(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl mx-4 bg-white dark:bg-zinc-900 rounded-lg shadow-xl">
-        {/* 閉じるボタン */}
-        <button
-          onClick={handleCancel}
-          className="absolute top-4 right-4 p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
-          disabled={isPending || isDeleting}
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-
-        <div className="p-8">
+    <div className="min-h-screen bg-zinc-50 dark:bg-black p-8">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-8">
+          <div className="mb-6">
+            <button
+              onClick={handleCancel}
+              className="inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+              disabled={isDeleting}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              戻る
+            </button>
+          </div>
           {/* 警告アイコンとタイトル */}
           <div className="flex items-start gap-4 mb-6">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+            <div className="shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
               <svg
                 className="w-6 h-6 text-red-600 dark:text-red-400"
                 fill="none"
@@ -161,7 +154,7 @@ export default function DeleteBookModal({ book }: DeleteBookModalProps) {
               id="confirmation"
               value={confirmationText}
               onChange={(e) => setConfirmationText(e.target.value)}
-              disabled={isPending || isDeleting}
+              disabled={isDeleting}
               className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-black dark:text-zinc-50 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
               placeholder={requiredText}
             />
@@ -184,7 +177,7 @@ export default function DeleteBookModal({ book }: DeleteBookModalProps) {
             <button
               type="button"
               onClick={handleCancel}
-              disabled={isPending || isDeleting}
+              disabled={isDeleting}
               className="flex-1 px-6 py-3 bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               キャンセル
@@ -192,7 +185,7 @@ export default function DeleteBookModal({ book }: DeleteBookModalProps) {
             <button
               type="button"
               onClick={handleDelete}
-              disabled={!isConfirmed || isPending || isDeleting}
+              disabled={!isConfirmed || isDeleting}
               className="flex-1 px-6 py-3 bg-red-600 dark:bg-red-700 text-white font-medium rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isDeleting ? "削除中..." : "削除する"}
