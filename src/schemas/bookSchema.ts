@@ -18,6 +18,9 @@ export const createBookSchema = z.object({
     .refine(
       (val) => {
         if (!val || val === "") return true; // 空文字列は許可
+        // 相対パス（/で始まる）を許可
+        if (val.startsWith("/")) return true;
+        // 絶対URLをチェック
         try {
           new URL(val);
           return true;
@@ -51,6 +54,9 @@ export const updateBookSchema = z.object({
     .refine(
       (val) => {
         if (!val || val === "") return true; // 空文字列は許可
+        // 相対パス（/で始まる）を許可
+        if (val.startsWith("/")) return true;
+        // 絶対URLをチェック
         try {
           new URL(val);
           return true;
