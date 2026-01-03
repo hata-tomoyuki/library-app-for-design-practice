@@ -12,6 +12,22 @@ export const createBookSchema = z.object({
   publishedAt: z.date().refine((date) => !isNaN(date.getTime()), {
     message: "有効な日付を入力してください",
   }),
+  isAvailable: z.boolean(),
+  imageUrl: z
+    .string()
+    .refine(
+      (val) => {
+        if (!val || val === "") return true; // 空文字列は許可
+        try {
+          new URL(val);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "有効なURLを入力してください" },
+    )
+    .optional(),
 });
 
 export type CreateBookInput = z.infer<typeof createBookSchema>;
@@ -30,6 +46,21 @@ export const updateBookSchema = z.object({
     message: "有効な日付を入力してください",
   }),
   isAvailable: z.boolean(),
+  imageUrl: z
+    .string()
+    .refine(
+      (val) => {
+        if (!val || val === "") return true; // 空文字列は許可
+        try {
+          new URL(val);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "有効なURLを入力してください" },
+    )
+    .optional(),
 });
 
 export type UpdateBookInput = z.infer<typeof updateBookSchema>;

@@ -39,6 +39,8 @@ export class BookController {
       title: validatedData.title,
       author: validatedData.author,
       publishedAt: validatedData.publishedAt,
+      isAvailable: validatedData.isAvailable,
+      imageUrl: validatedData.imageUrl,
     };
 
     return await this.createUseCase.execute(requestDto);
@@ -72,6 +74,7 @@ export class BookController {
       author: validatedData.author,
       publishedAt: validatedData.publishedAt,
       isAvailable: validatedData.isAvailable,
+      imageUrl: validatedData.imageUrl,
       updatedAt: new Date(),
     };
 

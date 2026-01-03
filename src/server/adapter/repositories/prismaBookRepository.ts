@@ -13,6 +13,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
         author: book.author,
         publishedAt: book.publishedAt,
         isAvailable: false,
+        imageUrl: book.imageUrl ?? "/image/no-image.png",
         createdAt: book.createdAt,
         updatedAt: book.updatedAt,
       },
@@ -24,6 +25,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
       createdBook.author,
       createdBook.publishedAt,
       createdBook.isAvailable,
+      createdBook.imageUrl ?? "/image/no-image.png",
       createdBook.createdAt,
       createdBook.updatedAt,
     );
@@ -42,6 +44,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
       foundBook.author,
       foundBook.publishedAt,
       foundBook.isAvailable,
+      foundBook.imageUrl ?? "/image/no-image.png",
       foundBook.createdAt,
       foundBook.updatedAt,
     );
@@ -62,6 +65,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
           book.author,
           book.publishedAt,
           book.isAvailable,
+          book.imageUrl ?? "/image/no-image.png",
           book.createdAt,
           book.updatedAt,
         ),
@@ -76,6 +80,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
         author: book.author,
         publishedAt: book.publishedAt,
         isAvailable: book.isAvailable,
+        imageUrl: book.imageUrl ?? "/image/no-image.png",
         updatedAt: book.updatedAt,
       },
     });
@@ -86,6 +91,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
       updatedBook.author,
       updatedBook.publishedAt,
       updatedBook.isAvailable,
+      updatedBook.imageUrl ?? "/image/no-image.png",
       updatedBook.createdAt,
       updatedBook.updatedAt,
     );
