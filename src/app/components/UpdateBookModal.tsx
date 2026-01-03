@@ -30,6 +30,7 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
     title: book.title,
     author: book.author,
     publishedAt: publishedAtDate,
+    isAvailable: book.isAvailable,
   };
 
   const {
@@ -57,6 +58,7 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
           title: data.title,
           author: data.author,
           publishedAt: data.publishedAt,
+          isAvailable: data.isAvailable,
         });
 
         setSuccess(result);
@@ -183,6 +185,25 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
               )}
             </div>
 
+            <div>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("isAvailable")}
+                  disabled={isPending}
+                  className="w-5 h-5 text-zinc-900 dark:text-zinc-50 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 rounded focus:ring-2 focus:ring-zinc-500 disabled:opacity-50 cursor-pointer"
+                />
+                <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  貸出可能
+                </span>
+              </label>
+              {errors.isAvailable && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {errors.isAvailable.message}
+                </p>
+              )}
+            </div>
+
             {error && (
               <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
                 <p className="text-sm text-red-800 dark:text-red-200">
@@ -204,6 +225,7 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
                     出版日:{" "}
                     {new Date(success.publishedAt).toLocaleDateString("ja-JP")}
                   </p>
+                  <p>貸出可能: {success.isAvailable ? "はい" : "いいえ"}</p>
                 </div>
                 <p className="text-xs text-green-700 dark:text-green-300 mt-2">
                   詳細ページにリダイレクトします...
