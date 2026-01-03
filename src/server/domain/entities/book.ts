@@ -4,6 +4,7 @@ export class Book {
     private _title: string,
     private _author: string,
     private _publishedAt: Date,
+    private _isAvailable: boolean = false,
     private _createdAt: Date = new Date(),
     private _updatedAt: Date = new Date(),
   ) {}
@@ -22,6 +23,10 @@ export class Book {
 
   get publishedAt(): Date {
     return this._publishedAt;
+  }
+
+  get isAvailable(): boolean {
+    return this._isAvailable;
   }
 
   get createdAt(): Date {
