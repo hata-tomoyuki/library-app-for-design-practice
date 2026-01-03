@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { redirect } from "next/navigation";
 import { deleteOldImage } from "@/lib/uploadthing-utils";
 import { PrismaBookRepository } from "@/server/adapter/repositories/prismaBookRepository";
 import { CreateUseCase } from "@/server/application/usecases/book/createUseCase";
@@ -38,11 +39,9 @@ const bookController = new BookController(
   deleteUseCase,
 );
 
-export async function createBook(
-  input: CreateBookInput,
-): Promise<CreateResponseDto> {
+export async function createBook(input: CreateBookInput) {
   try {
-    return await bookController.create(input);
+    await bookController.create(input);
   } catch (error) {
     // Zodのバリデーションエラーを処理
     if (error instanceof z.ZodError) {
@@ -55,6 +54,7 @@ export async function createBook(
     console.error("書籍の作成に失敗しました:", error);
     throw new Error("書籍の作成に失敗しました");
   }
+  redirect("/dashboard");
 }
 
 export async function findAllBooks(): Promise<FindAllResponseDto[]> {
@@ -67,7 +67,9 @@ export async function findAllBooks(): Promise<FindAllResponseDto[]> {
   }
 }
 
-export async function findBookById(id: string): Promise<FindByIdResponseDto> {
+export async function findBookById(
+  id: string,
+): Promise<FindByIdResponseDto | null> {
   try {
     const requestDto: FindByIdRequestDto = { id };
     return await bookController.findById(requestDto);
@@ -77,48 +79,53 @@ export async function findBookById(id: string): Promise<FindByIdResponseDto> {
   }
 }
 
-export async function updateBook(
-  input: UpdateBookInput,
-  oldImageUrl?: string,
-): Promise<UpdateResponseDto> {
+export async function updateBook(input: UpdateBookInput, oldImageUrl?: string) {
+  let result;
   try {
-    const result = await bookController.update(input);
+    result = await bookController.update(input);
 
-    // 新しい画像がアップロードされた場合、古い画像を削除
     if (input.imageUrl && oldImageUrl && input.imageUrl !== oldImageUrl) {
       await deleteOldImage(oldImageUrl);
     }
-
-    return result;
   } catch (error) {
-    // Zodのバリデーションエラーを処理
     if (error instanceof z.ZodError) {
-      const errorMessages = error.issues
-        .map((issue) => issue.message)
-        .join(", ");
-      throw new Error(`バリデーションエラー: ${errorMessages}`);
+      const msg = error.issues.map((i) => i.message).join(", ");
+      throw new Error(`バリデーションエラー: ${msg}`);
     }
-
     console.error("書籍の更新に失敗しました:", error);
     throw new Error("書籍の更新に失敗しました");
   }
+
+  redirect(`/dashboard/books/${result.id}`);
 }
 
-export async function deleteBook(id: string): Promise<DeleteResponseDto> {
+export async function deleteBook(id: string) {
   try {
     // 削除前に書籍情報を取得して画像URLを保存
     const book = await bookController.findById({ id });
 
+    if (!book) {
+      throw new Error("書籍が見つかりませんでした");
+    }
+
     // 書籍を削除
-    const result = await bookController.delete(id);
+    await bookController.delete(id);
 
     // 削除された書籍の画像をUploadThingから削除
     if (book.imageUrl) {
       await deleteOldImage(book.imageUrl);
     }
 
-    return result;
+    redirect("/dashboard");
   } catch (error) {
+    // redirect()がthrowするNEXT_REDIRECTエラーは再throwする必要がある
+    if (error && typeof error === "object" && "digest" in error) {
+      const digest = (error as { digest?: string }).digest;
+      if (digest?.startsWith("NEXT_REDIRECT")) {
+        throw error;
+      }
+    }
+
     console.error("書籍の削除に失敗しました:", error);
     throw error;
   }
