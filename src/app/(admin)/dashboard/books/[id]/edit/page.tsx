@@ -1,8 +1,8 @@
 import { findBookById } from "@/app/actions/bookActions";
-import DeleteBookModal from "@/app/components/DeleteBookModal";
+import UpdateBookModal from "@/app/components/UpdateBookModal";
 import { notFound } from "next/navigation";
 
-export default async function DeleteModalPage({
+export default async function EditPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -10,5 +10,5 @@ export default async function DeleteModalPage({
   const { id } = await params;
   const book = await findBookById(id).catch(() => null);
   if (!book) notFound();
-  return <DeleteBookModal book={book} />;
+  return <UpdateBookModal book={book} />;
 }
