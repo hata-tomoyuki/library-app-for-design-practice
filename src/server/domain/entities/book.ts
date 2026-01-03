@@ -5,6 +5,7 @@ export class Book {
     private _author: string,
     private _publishedAt: Date,
     private _isAvailable: boolean = false,
+    private _imageUrl?: string,
     private _createdAt: Date = new Date(),
     private _updatedAt: Date = new Date(),
   ) {}
@@ -27,6 +28,10 @@ export class Book {
 
   get isAvailable(): boolean {
     return this._isAvailable;
+  }
+
+  get imageUrl(): string | undefined {
+    return this._imageUrl;
   }
 
   get createdAt(): Date {
