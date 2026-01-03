@@ -71,6 +71,7 @@ export class BookController {
       title: validatedData.title,
       author: validatedData.author,
       publishedAt: validatedData.publishedAt,
+      isAvailable: validatedData.isAvailable,
       updatedAt: new Date(),
     };
 

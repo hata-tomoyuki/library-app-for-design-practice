@@ -23,6 +23,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
       createdBook.title,
       createdBook.author,
       createdBook.publishedAt,
+      createdBook.isAvailable,
       createdBook.createdAt,
       createdBook.updatedAt,
     );
@@ -40,6 +41,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
       foundBook.title,
       foundBook.author,
       foundBook.publishedAt,
+      foundBook.isAvailable,
       foundBook.createdAt,
       foundBook.updatedAt,
     );
@@ -59,6 +61,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
           book.title,
           book.author,
           book.publishedAt,
+          book.isAvailable,
           book.createdAt,
           book.updatedAt,
         ),
@@ -72,6 +75,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
         title: book.title,
         author: book.author,
         publishedAt: book.publishedAt,
+        isAvailable: book.isAvailable,
         updatedAt: book.updatedAt,
       },
     });
@@ -81,6 +85,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
       updatedBook.title,
       updatedBook.author,
       updatedBook.publishedAt,
+      updatedBook.isAvailable,
       updatedBook.createdAt,
       updatedBook.updatedAt,
     );

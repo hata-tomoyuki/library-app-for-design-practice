@@ -29,6 +29,7 @@ export const updateBookSchema = z.object({
   publishedAt: z.date().refine((date) => !isNaN(date.getTime()), {
     message: "有効な日付を入力してください",
   }),
+  isAvailable: z.boolean(),
 });
 
 export type UpdateBookInput = z.infer<typeof updateBookSchema>;
