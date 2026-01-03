@@ -13,7 +13,7 @@ export default function Sidebar() {
       icon: "📚",
     },
     {
-      href: "/dashboard/create",
+      href: "/dashboard/books/create",
       label: "書籍登録",
       icon: "➕",
     },

@@ -17,7 +17,7 @@ export default async function DashboardPage() {
             </p>
           </div>
           <Link
-            href="/dashboard/create"
+            href="/dashboard/books/create"
             className="px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
           >
             ➕ 新規登録
@@ -30,7 +30,7 @@ export default async function DashboardPage() {
               まだ書籍が登録されていません
             </p>
             <Link
-              href="/dashboard/create"
+              href="/dashboard/books/create"
               className="inline-block px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
             >
               最初の書籍を登録する
@@ -41,7 +41,7 @@ export default async function DashboardPage() {
             {books.map((book) => (
               <Link
                 key={book.id}
-                href={`/dashboard/${books[0].id}`}
+                href={`/dashboard/books/${books[0].id}`}
                 className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
               >
                 <h2 className="text-xl font-bold text-black dark:text-zinc-50 mb-2 line-clamp-2">
