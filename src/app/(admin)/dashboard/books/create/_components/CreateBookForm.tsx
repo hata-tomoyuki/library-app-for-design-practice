@@ -7,6 +7,8 @@ import { createBook } from "@/app/actions/bookActions";
 import { createBookSchema, type CreateBookInput } from "@/schemas/bookSchema";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
+import ErrorMessage from "@/app/components/ErrorMessage";
+import Button from "@/app/components/Button";
 
 export default function CreateBookForm() {
   const [isPending, startTransition] = useTransition();
@@ -214,11 +216,13 @@ export default function CreateBookForm() {
                   height={200}
                   className="rounded-lg object-cover"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="danger"
+                  size="small"
                   onClick={handleRemoveImage}
-                  className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
                   disabled={isPending || isUploading}
+                  className="absolute top-2 right-2"
                 >
                   <svg
                     className="w-4 h-4"
@@ -233,7 +237,7 @@ export default function CreateBookForm() {
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                </button>
+                </Button>
               </div>
             ) : (
               <div>
@@ -277,23 +281,20 @@ export default function CreateBookForm() {
           )}
         </div>
 
-        {error && (
-          <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-            <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
-          </div>
-        )}
+        {error && <ErrorMessage message={error} />}
 
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          fullWidth
           disabled={isPending || isUploading}
-          className="w-full px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-md hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending || isUploading
             ? isUploading
               ? "画像をアップロード中..."
               : "登録中..."
             : "書籍を登録"}
-        </button>
+        </Button>
       </form>
     </div>
   );

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { updateBook } from "@/app/actions/bookActions";
 import { updateBookSchema, type UpdateBookInput } from "@/schemas/bookSchema";
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
+import Button from "@/app/components/Button";
 
 interface UpdateBookFormProps {
   book: FindByIdResponseDto;
@@ -154,21 +155,23 @@ export default function UpdateBookForm({ book }: UpdateBookFormProps) {
         )}
 
         <div className="flex gap-4">
-          <button
+          <Button
             type="button"
+            variant="secondary"
             onClick={() => router.back()}
             disabled={isPending}
-            className="flex-1 px-6 py-3 bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-medium rounded-md hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1"
           >
             キャンセル
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
+            variant="primary"
             disabled={isPending}
-            className="flex-1 px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-md hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1"
           >
             {isPending ? "更新中..." : "書籍を更新"}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

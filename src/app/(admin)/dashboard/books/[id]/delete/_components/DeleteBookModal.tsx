@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteBook } from "@/app/actions/bookActions";
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
+import Button from "@/app/components/Button";
 
 interface DeleteBookModalProps {
   book: FindByIdResponseDto;
@@ -174,22 +175,24 @@ export default function DeleteBookModal({ book }: DeleteBookModalProps) {
 
           {/* ボタン */}
           <div className="flex gap-4">
-            <button
+            <Button
               type="button"
+              variant="secondary"
               onClick={handleCancel}
               disabled={isDeleting}
-              className="flex-1 px-6 py-3 bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1"
             >
               キャンセル
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="danger"
               onClick={handleDelete}
               disabled={!isConfirmed || isDeleting}
-              className="flex-1 px-6 py-3 bg-red-600 dark:bg-red-700 text-white font-medium rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1"
             >
               {isDeleting ? "削除中..." : "削除する"}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

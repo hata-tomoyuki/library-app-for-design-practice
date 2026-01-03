@@ -9,6 +9,7 @@ import { updateBookSchema, type UpdateBookInput } from "@/schemas/bookSchema";
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
+import Button from "@/app/components/Button";
 
 interface UpdateBookModalProps {
   book: FindByIdResponseDto;
@@ -256,11 +257,13 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
                       height={200}
                       className="rounded-lg object-cover"
                     />
-                    <button
+                    <Button
                       type="button"
+                      variant="danger"
+                      size="small"
                       onClick={handleRemoveImage}
-                      className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
                       disabled={isPending || isUploading}
+                      className="absolute top-2 right-2"
                     >
                       <svg
                         className="w-4 h-4"
@@ -275,7 +278,7 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
                           d="M6 18L18 6M6 6l12 12"
                         />
                       </svg>
-                    </button>
+                    </Button>
                   </div>
                 ) : book.imageUrl ? (
                   <div className="relative">
@@ -286,14 +289,16 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
                       height={200}
                       className="rounded-lg object-cover"
                     />
-                    <button
+                    <Button
                       type="button"
+                      variant="secondary"
+                      size="small"
                       onClick={() => {
                         setValue("imageUrl", undefined);
                         fileInputRef.current?.click();
                       }}
-                      className="absolute top-2 right-2 p-1 bg-zinc-600 text-white rounded-full hover:bg-zinc-700 transition-colors"
                       disabled={isPending || isUploading}
+                      className="absolute top-2 right-2"
                     >
                       <svg
                         className="w-4 h-4"
@@ -308,7 +313,7 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
                         />
                       </svg>
-                    </button>
+                    </Button>
                   </div>
                 ) : null}
                 <div>
@@ -360,25 +365,27 @@ export default function UpdateBookModal({ book }: UpdateBookModalProps) {
             )}
 
             <div className="flex gap-4">
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={handleCancel}
                 disabled={isPending}
-                className="flex-1 px-6 py-3 bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-medium rounded-md hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1"
               >
                 キャンセル
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
+                variant="primary"
                 disabled={isPending || isUploading}
-                className="flex-1 px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-md hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1"
               >
                 {isPending || isUploading
                   ? isUploading
                     ? "画像をアップロード中..."
                     : "更新中..."
                   : "書籍を更新"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
