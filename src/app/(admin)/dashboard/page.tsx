@@ -1,5 +1,6 @@
 import { findAllBooks } from "@/app/actions/bookActions";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function DashboardPage() {
   const books = await findAllBooks();
@@ -41,24 +42,46 @@ export default async function DashboardPage() {
             {books.map((book) => (
               <Link
                 key={book.id}
-                href={`/dashboard/books/${books[0].id}`}
-                className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
+                href={`/dashboard/books/${book.id}`}
+                className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
               >
-                <h2 className="text-xl font-bold text-black dark:text-zinc-50 mb-2 line-clamp-2">
-                  {book.title}
-                </h2>
-                <p className="text-zinc-600 dark:text-zinc-400 mb-4">
-                  著者: {book.author}
-                </p>
-                <div className="text-sm text-zinc-500 dark:text-zinc-500 space-y-1">
-                  <p>
-                    出版日:{" "}
-                    {new Date(book.publishedAt).toLocaleDateString("ja-JP")}
+                <div className="relative w-full h-48 bg-zinc-200 dark:bg-zinc-800">
+                  <Image
+                    src={book.imageUrl || "/image/no-image.png"}
+                    alt={book.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                </div>
+                <div className="p-6">
+                  <h2 className="text-xl font-bold text-black dark:text-zinc-50 mb-2 line-clamp-2">
+                    {book.title}
+                  </h2>
+                  <p className="text-zinc-600 dark:text-zinc-400 mb-4">
+                    著者: {book.author}
                   </p>
-                  <p>
-                    登録日:{" "}
-                    {new Date(book.createdAt).toLocaleDateString("ja-JP")}
-                  </p>
+                  <div className="text-sm text-zinc-500 dark:text-zinc-500 space-y-1">
+                    <p>
+                      出版日:{" "}
+                      {new Date(book.publishedAt).toLocaleDateString("ja-JP")}
+                    </p>
+                    <p>
+                      登録日:{" "}
+                      {new Date(book.createdAt).toLocaleDateString("ja-JP")}
+                    </p>
+                    <p className="mt-2">
+                      <span
+                        className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                          book.isAvailable
+                            ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200"
+                            : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200"
+                        }`}
+                      >
+                        {book.isAvailable ? "貸出可能" : "貸出中"}
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </Link>
             ))}
