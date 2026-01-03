@@ -3,6 +3,7 @@ export interface FindAllResponseDto {
   title: string;
   author: string;
   publishedAt: Date;
+  isAvailable: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -18,6 +18,7 @@ export class FindAllUseCase implements FindAllUseCaseInterface {
       title: book.title,
       author: book.author,
       publishedAt: book.publishedAt,
+      isAvailable: book.isAvailable,
       createdAt: book.createdAt,
       updatedAt: book.updatedAt,
     }));

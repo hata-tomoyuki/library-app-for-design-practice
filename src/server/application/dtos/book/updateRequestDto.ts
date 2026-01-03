@@ -3,5 +3,6 @@ export interface UpdateRequestDto {
   title: string;
   author: string;
   publishedAt: Date;
+  isAvailable: boolean;
   updatedAt: Date;
 }
