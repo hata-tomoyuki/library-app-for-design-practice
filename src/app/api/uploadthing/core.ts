@@ -11,16 +11,14 @@ export const ourFileRouter = {
       maxFileSize: "4MB",
       maxFileCount: 1,
     },
-  })
-    .onUploadComplete(async ({ file }) => {
-      // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for file:", file.name);
-      console.log("file url", file.url);
+  }).onUploadComplete(async ({ file }) => {
+    // This code RUNS ON YOUR SERVER after upload
+    console.log("Upload complete for file:", file.name);
+    console.log("file url", file.url);
 
-      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { url: file.url };
-    }),
+    // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+    return { url: file.url };
+  }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
-
