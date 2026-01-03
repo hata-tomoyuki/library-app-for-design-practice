@@ -106,7 +106,18 @@ export async function updateBook(
 
 export async function deleteBook(id: string): Promise<DeleteResponseDto> {
   try {
-    return await bookController.delete(id);
+    // 削除前に書籍情報を取得して画像URLを保存
+    const book = await bookController.findById({ id });
+
+    // 書籍を削除
+    const result = await bookController.delete(id);
+
+    // 削除された書籍の画像をUploadThingから削除
+    if (book.imageUrl) {
+      await deleteOldImage(book.imageUrl);
+    }
+
+    return result;
   } catch (error) {
     console.error("書籍の削除に失敗しました:", error);
     throw error;
