@@ -1,6 +1,6 @@
 import { findBookById } from "@/app/actions/bookActions";
 import { notFound } from "next/navigation";
-import DeleteBookModal from "./DeleteBookModal";
+import DeleteBookModal from "./_components/DeleteBookModal";
 
 export default async function DeletePage({
   params,
