@@ -19,6 +19,7 @@ export class FindAllUseCase implements FindAllUseCaseInterface {
       author: book.author,
       publishedAt: book.publishedAt,
       isAvailable: book.isAvailable,
+      imageUrl: book.imageUrl,
       createdAt: book.createdAt,
       updatedAt: book.updatedAt,
     }));

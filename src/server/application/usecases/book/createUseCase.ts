@@ -18,6 +18,8 @@ export class CreateUseCase implements CreateUseCaseInterface {
       requestDto.title,
       requestDto.author,
       requestDto.publishedAt,
+      requestDto.isAvailable,
+      requestDto.imageUrl
     );
 
     const createdBook = await this.bookRepository.create(newBook);
@@ -27,6 +29,7 @@ export class CreateUseCase implements CreateUseCaseInterface {
       title: createdBook.title,
       author: createdBook.author,
       publishedAt: createdBook.publishedAt,
+      imageUrl: createdBook.imageUrl,
       createdAt: createdBook.createdAt,
       updatedAt: createdBook.updatedAt,
     };

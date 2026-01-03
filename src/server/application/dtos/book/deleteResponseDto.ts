@@ -3,6 +3,8 @@ export interface DeleteResponseDto {
   title: string;
   author: string;
   publishedAt: Date;
+  isAvailable: boolean;
+  imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }

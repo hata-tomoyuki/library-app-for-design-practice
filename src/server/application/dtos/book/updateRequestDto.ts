@@ -4,5 +4,6 @@ export interface UpdateRequestDto {
   author: string;
   publishedAt: Date;
   isAvailable: boolean;
+  imageUrl?: string;
   updatedAt: Date;
 }

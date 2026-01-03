@@ -22,6 +22,7 @@ export class FindByIdUseCase implements FindByIdUseCaseInterface {
       author: foundBook.author,
       publishedAt: foundBook.publishedAt,
       isAvailable: foundBook.isAvailable,
+      imageUrl: foundBook.imageUrl,
       createdAt: foundBook.createdAt,
       updatedAt: foundBook.updatedAt,
     };

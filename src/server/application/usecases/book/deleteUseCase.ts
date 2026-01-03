@@ -23,6 +23,8 @@ export class DeleteUseCase implements DeleteUseCaseInterface {
       title: existingBook.title,
       author: existingBook.author,
       publishedAt: existingBook.publishedAt,
+      isAvailable: existingBook.isAvailable,
+      imageUrl: existingBook.imageUrl,
       createdAt: existingBook.createdAt,
       updatedAt: existingBook.updatedAt,
     };

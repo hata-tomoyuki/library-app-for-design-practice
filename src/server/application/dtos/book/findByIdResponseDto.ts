@@ -4,6 +4,7 @@ export interface FindByIdResponseDto {
   author: string;
   publishedAt: Date;
   isAvailable: boolean;
+  imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -18,6 +18,7 @@ export class UpdateUseCase implements UpdateUseCaseInterface {
       requestDto.author,
       requestDto.publishedAt,
       requestDto.isAvailable,
+      requestDto.imageUrl,
       existingBook ? existingBook.createdAt : new Date(),
       new Date(),
     );
@@ -30,6 +31,7 @@ export class UpdateUseCase implements UpdateUseCaseInterface {
       author: savedBook.author,
       publishedAt: savedBook.publishedAt,
       isAvailable: savedBook.isAvailable,
+      imageUrl: savedBook.imageUrl,
       createdAt: savedBook.createdAt,
       updatedAt: savedBook.updatedAt,
     };

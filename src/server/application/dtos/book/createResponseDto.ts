@@ -3,6 +3,7 @@ export interface CreateResponseDto {
   title: string;
   author: string;
   publishedAt: Date;
+  imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }
