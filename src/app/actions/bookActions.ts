@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { deleteOldImage } from "@/lib/uploadthing-utils";
 import { PrismaBookRepository } from "@/server/adapter/repositories/prismaBookRepository";
 import { CreateUseCase } from "@/server/application/usecases/book/createUseCase";
@@ -38,10 +39,31 @@ const bookController = new BookController(
   deleteUseCase,
 );
 
+function isRedirectError(error: unknown): boolean {
+  if (error === null || typeof error !== "object") {
+    return false;
+  }
+  const digest = (error as { digest?: string }).digest;
+  return typeof digest === "string" && digest.startsWith("NEXT_REDIRECT");
+}
+
 export async function createBook(input: CreateBookInput) {
   try {
+    // 管理者権限チェック
+    const session = await auth();
+    if (!session?.user) {
+      throw new Error("ログインが必要です");
+    }
+    const userRole = (session.user as any).role;
+    if (userRole !== "ADMIN") {
+      throw new Error("この操作を実行する権限がありません");
+    }
+
     await bookController.create(input);
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
     // Zodのバリデーションエラーを処理
     if (error instanceof z.ZodError) {
       const errorMessages = error.issues
@@ -51,7 +73,9 @@ export async function createBook(input: CreateBookInput) {
     }
 
     console.error("書籍の作成に失敗しました:", error);
-    throw new Error("書籍の作成に失敗しました");
+    throw new Error(
+      error instanceof Error ? error.message : "書籍の作成に失敗しました",
+    );
   }
   redirect("/dashboard");
 }
@@ -81,18 +105,33 @@ export async function findBookById(
 export async function updateBook(input: UpdateBookInput, oldImageUrl?: string) {
   let result;
   try {
+    // 管理者権限チェック
+    const session = await auth();
+    if (!session?.user) {
+      throw new Error("ログインが必要です");
+    }
+    const userRole = (session.user as any).role;
+    if (userRole !== "ADMIN") {
+      throw new Error("この操作を実行する権限がありません");
+    }
+
     result = await bookController.update(input);
 
     if (input.imageUrl && oldImageUrl && input.imageUrl !== oldImageUrl) {
       await deleteOldImage(oldImageUrl);
     }
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
     if (error instanceof z.ZodError) {
       const msg = error.issues.map((i) => i.message).join(", ");
       throw new Error(`バリデーションエラー: ${msg}`);
     }
     console.error("書籍の更新に失敗しました:", error);
-    throw new Error("書籍の更新に失敗しました");
+    throw new Error(
+      error instanceof Error ? error.message : "書籍の更新に失敗しました",
+    );
   }
 
   redirect(`/dashboard/books/${result.id}`);
@@ -100,6 +139,16 @@ export async function updateBook(input: UpdateBookInput, oldImageUrl?: string) {
 
 export async function deleteBook(id: string) {
   try {
+    // 管理者権限チェック
+    const session = await auth();
+    if (!session?.user) {
+      throw new Error("ログインが必要です");
+    }
+    const userRole = (session.user as any).role;
+    if (userRole !== "ADMIN") {
+      throw new Error("この操作を実行する権限がありません");
+    }
+
     // 削除前に書籍情報を取得して画像URLを保存
     const book = await bookController.findById({ id });
 
@@ -118,11 +167,8 @@ export async function deleteBook(id: string) {
     redirect("/dashboard");
   } catch (error) {
     // redirect()がthrowするNEXT_REDIRECTエラーは再throwする必要がある
-    if (error && typeof error === "object" && "digest" in error) {
-      const digest = (error as { digest?: string }).digest;
-      if (digest?.startsWith("NEXT_REDIRECT")) {
-        throw error;
-      }
+    if (isRedirectError(error)) {
+      throw error;
     }
 
     console.error("書籍の削除に失敗しました:", error);
