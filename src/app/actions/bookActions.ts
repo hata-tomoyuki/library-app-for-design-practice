@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { requireAuth, requireAdmin } from "@/lib/auth-guard";
 import { deleteOldImage } from "@/lib/uploadthing-utils";
 import { PrismaBookRepository } from "@/server/adapter/repositories/prismaBookRepository";
 import { CreateUseCase } from "@/server/application/usecases/book/createUseCase";
@@ -19,9 +19,7 @@ import { FindAllRequestDto } from "@/server/application/dtos/book/findAllRequest
 import { FindByIdResponseDto } from "@/server/application/dtos/book/findByIdResponseDto";
 import { FindByIdRequestDto } from "@/server/application/dtos/book/findByIdRequestDto";
 import { UpdateUseCase } from "@/server/application/usecases/book/updateUseCase";
-import { UpdateResponseDto } from "@/server/application/dtos/book/updateResponseDto";
 import { DeleteUseCase } from "@/server/application/usecases/book/deleteUseCase";
-import { DeleteResponseDto } from "@/server/application/dtos/book/deleteResponseDto";
 import prisma from "@/lib/prisma";
 
 const bookRepository = new PrismaBookRepository(prisma);
@@ -50,14 +48,7 @@ function isRedirectError(error: unknown): boolean {
 export async function createBook(input: CreateBookInput) {
   try {
     // 管理者権限チェック
-    const session = await auth();
-    if (!session?.user) {
-      throw new Error("ログインが必要です");
-    }
-    const userRole = (session.user as any).role;
-    if (userRole !== "ADMIN") {
-      throw new Error("この操作を実行する権限がありません");
-    }
+    await requireAdmin();
 
     await bookController.create(input);
   } catch (error) {
@@ -82,11 +73,16 @@ export async function createBook(input: CreateBookInput) {
 
 export async function findAllBooks(): Promise<FindAllResponseDto[]> {
   try {
+    // ログインチェック
+    await requireAuth();
+
     const requestDto: FindAllRequestDto = {};
     return await bookController.findAll(requestDto);
   } catch (error) {
     console.error("書籍一覧の取得に失敗しました:", error);
-    throw new Error("書籍一覧の取得に失敗しました");
+    throw new Error(
+      error instanceof Error ? error.message : "書籍一覧の取得に失敗しました",
+    );
   }
 }
 
@@ -94,6 +90,9 @@ export async function findBookById(
   id: string,
 ): Promise<FindByIdResponseDto | null> {
   try {
+    // ログインチェック
+    await requireAuth();
+
     const requestDto: FindByIdRequestDto = { id };
     return await bookController.findById(requestDto);
   } catch (error) {
@@ -106,14 +105,7 @@ export async function updateBook(input: UpdateBookInput, oldImageUrl?: string) {
   let result;
   try {
     // 管理者権限チェック
-    const session = await auth();
-    if (!session?.user) {
-      throw new Error("ログインが必要です");
-    }
-    const userRole = (session.user as any).role;
-    if (userRole !== "ADMIN") {
-      throw new Error("この操作を実行する権限がありません");
-    }
+    await requireAdmin();
 
     result = await bookController.update(input);
 
@@ -140,14 +132,7 @@ export async function updateBook(input: UpdateBookInput, oldImageUrl?: string) {
 export async function deleteBook(id: string) {
   try {
     // 管理者権限チェック
-    const session = await auth();
-    if (!session?.user) {
-      throw new Error("ログインが必要です");
-    }
-    const userRole = (session.user as any).role;
-    if (userRole !== "ADMIN") {
-      throw new Error("この操作を実行する権限がありません");
-    }
+    await requireAdmin();
 
     // 削除前に書籍情報を取得して画像URLを保存
     const book = await bookController.findById({ id });

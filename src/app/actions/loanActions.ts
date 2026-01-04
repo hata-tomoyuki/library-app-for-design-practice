@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth-guard";
 import { PrismaLoanRepository } from "@/server/adapter/repositories/prismaLoanRepository";
 import { PrismaBookRepository } from "@/server/adapter/repositories/prismaBookRepository";
 import { UuidGenerator } from "@/server/adapter/utils/uuidGenerator";
@@ -52,11 +52,8 @@ function isRedirectError(error: unknown): boolean {
  */
 export async function createLoan(bookId: string) {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      throw new Error("ログインが必要です");
-    }
-
+    // ログインチェック
+    const session = await requireAuth();
     const userId = (session.user as any).id;
     if (!userId) {
       throw new Error("ログインが必要です");
@@ -83,6 +80,9 @@ export async function createLoan(bookId: string) {
  */
 export async function returnLoan(loanId: string) {
   try {
+    // ログインチェック
+    await requireAuth();
+
     await loanController.return({ loanId });
   } catch (error) {
     if (isRedirectError(error)) {
@@ -103,6 +103,9 @@ export async function findLoanById(
   id: string,
 ): Promise<FindLoanByIdResponseDto | null> {
   try {
+    // ログインチェック
+    await requireAuth();
+
     return await loanController.findById({ id });
   } catch (error) {
     console.error("貸出記録の取得に失敗しました:", error);
@@ -117,11 +120,8 @@ export async function findLoansByUserId(): Promise<
   FindLoansByUserIdResponseDto[]
 > {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      throw new Error("ログインが必要です");
-    }
-
+    // ログインチェック
+    const session = await requireAuth();
     const userId = (session.user as any).id;
     if (!userId) {
       throw new Error("ログインが必要です");
