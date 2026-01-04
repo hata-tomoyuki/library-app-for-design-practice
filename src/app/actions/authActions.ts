@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import { signIn } from "@/lib/auth";
+import { signIn } from "@/lib/auth-utils";
 import { PrismaUserRepository } from "@/server/adapter/repositories/prismaUserRepository";
 import { UuidGenerator } from "@/server/adapter/utils/uuidGenerator";
 import { SignupUseCase } from "@/server/application/usecases/user/signupUseCase";
