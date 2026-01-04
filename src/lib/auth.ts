@@ -1,10 +1,11 @@
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { PrismaUserRepository } from "@/server/adapter/repositories/prismaUserRepository";
 import { VerifyCredentialsUseCase } from "@/server/application/usecases/user/verifyCredentialsUseCase";
 import { BcryptPasswordHasher } from "@/server/adapter/utils/bcryptPasswordHasher";
+import { getServerSession } from "next-auth/next";
 
 // UseCaseのインスタンスを作成（外側で依存関係を注入）
 const userRepository = new PrismaUserRepository(prisma);
@@ -14,7 +15,7 @@ const verifyCredentialsUseCase = new VerifyCredentialsUseCase(
   passwordHasher,
 );
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
 
@@ -67,4 +68,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
     signIn: "/login",
   },
-});
+};
+
+export default NextAuth(authOptions);
+
+// NextAuth v4用のauth関数
+export async function auth() {
+  return await getServerSession(authOptions);
+}
