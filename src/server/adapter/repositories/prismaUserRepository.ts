@@ -12,6 +12,7 @@ export class PrismaUserRepository implements UserRepositoryInterface {
         email: user.email,
         name: user.name ?? null,
         passwordHash: user.passwordHash ?? null,
+        role: user.role,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },
@@ -22,6 +23,7 @@ export class PrismaUserRepository implements UserRepositoryInterface {
       createdUser.email ?? "",
       createdUser.name,
       createdUser.passwordHash,
+      createdUser.role as "USER" | "ADMIN",
       createdUser.createdAt,
       createdUser.updatedAt,
     );
@@ -39,6 +41,7 @@ export class PrismaUserRepository implements UserRepositoryInterface {
       foundUser.email ?? "",
       foundUser.name,
       foundUser.passwordHash,
+      foundUser.role as "USER" | "ADMIN",
       foundUser.createdAt,
       foundUser.updatedAt,
     );
@@ -56,6 +59,7 @@ export class PrismaUserRepository implements UserRepositoryInterface {
       foundUser.email ?? "",
       foundUser.name,
       foundUser.passwordHash,
+      foundUser.role as "USER" | "ADMIN",
       foundUser.createdAt,
       foundUser.updatedAt,
     );
