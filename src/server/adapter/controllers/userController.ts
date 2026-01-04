@@ -11,7 +11,7 @@ import {
 // NextAuthのsignIn関数の型
 type SignInFunction = (
   provider: string,
-  options: { email: string; password: string; redirect: boolean }
+  options: { email: string; password: string; redirect: boolean },
 ) => Promise<{ error?: string } | undefined>;
 
 export class UserController {

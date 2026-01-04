@@ -20,7 +20,7 @@ const verifyCredentialsUseCase = new VerifyCredentialsUseCase(
  */
 export async function signIn(
   provider: string,
-  options: { email: string; password: string; redirect: boolean }
+  options: { email: string; password: string; redirect: boolean },
 ): Promise<{ error?: string } | undefined> {
   try {
     // UseCaseを直接呼び出して認証

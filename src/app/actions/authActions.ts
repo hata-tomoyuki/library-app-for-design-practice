@@ -65,8 +65,7 @@ export async function signupAction(
     console.error("ユーザー登録に失敗しました:", error);
     return {
       ok: false,
-      message:
-        error instanceof Error ? error.message : "登録に失敗しました",
+      message: error instanceof Error ? error.message : "登録に失敗しました",
     };
   }
 }
