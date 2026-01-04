@@ -21,6 +21,14 @@ function toFieldErrors(err: z.ZodError) {
   return err.flatten().fieldErrors as Record<string, string[]>;
 }
 
+function isRedirectError(error: unknown): boolean {
+  if (error === null || typeof error !== "object") {
+    return false;
+  }
+  const digest = (error as { digest?: string }).digest;
+  return typeof digest === "string" && digest.startsWith("NEXT_REDIRECT");
+}
+
 // UseCaseのインスタンスを作成（外側で依存関係を注入）
 const userRepository = new PrismaUserRepository(prisma);
 const passwordHasher = new BcryptPasswordHasher();
@@ -49,6 +57,11 @@ export async function signupAction(
     await userController.signupAndSignIn(raw);
     redirect("/dashboard");
   } catch (error) {
+    // redirect()がthrowするNEXT_REDIRECTエラーは再throwする必要がある
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
     // Zodのバリデーションエラーを処理
     if (error instanceof z.ZodError) {
       return {
@@ -88,6 +101,11 @@ export async function loginAction(
     await userController.login(raw);
     redirect("/dashboard");
   } catch (error) {
+    // redirect()がthrowするNEXT_REDIRECTエラーは再throwする必要がある
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
     // Zodのバリデーションエラーを処理
     if (error instanceof z.ZodError) {
       return {
@@ -112,10 +130,19 @@ export async function loginAction(
  * Logout: セッションを削除してログインページにリダイレクト
  */
 export async function logoutAction() {
-  const cookieStore = await cookies();
+  try {
+    const cookieStore = await cookies();
 
-  // NextAuthのセッションクッキーを削除
-  cookieStore.delete("next-auth.session-token");
+    // NextAuthのセッションクッキーを削除
+    cookieStore.delete("next-auth.session-token");
 
-  redirect("/login");
+    redirect("/login");
+  } catch (error) {
+    // redirect()がthrowするNEXT_REDIRECTエラーは再throwする必要がある
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    // その他のエラーは再throw
+    throw error;
+  }
 }
