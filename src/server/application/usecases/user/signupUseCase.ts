@@ -26,7 +26,7 @@ export class SignupUseCase implements SignupUseCaseInterface {
     // パスワードをハッシュ化
     const passwordHash = await this.passwordHasher.hash(requestDto.password);
 
-    // ユーザーエンティティを作成
+    // ユーザーエンティティを作成（デフォルトでUSERロール）
     const id = this.idGenerator.generate();
     const now = new Date();
     const newUser = new User(
@@ -34,6 +34,7 @@ export class SignupUseCase implements SignupUseCaseInterface {
       requestDto.email,
       requestDto.name ?? null,
       passwordHash,
+      "USER", // 新規登録時は常にUSERロール
       now,
       now,
     );
@@ -45,6 +46,7 @@ export class SignupUseCase implements SignupUseCaseInterface {
       id: createdUser.id,
       email: createdUser.email,
       name: createdUser.name,
+      role: createdUser.role,
     };
   }
 }
