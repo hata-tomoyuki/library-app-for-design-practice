@@ -18,3 +18,10 @@ export class UserNotFoundError extends Error {
     this.name = "UserNotFoundError";
   }
 }
+
+export class UnauthorizedError extends Error {
+  constructor(message: string = "この操作を実行する権限がありません") {
+    super(message);
+    this.name = "UnauthorizedError";
+  }
+}
