@@ -15,6 +15,11 @@ export default function Sidebar() {
       icon: "📚",
     },
     {
+      href: "/dashboard/loans",
+      label: "貸出一覧",
+      icon: "📖",
+    },
+    {
       href: "/dashboard/books/create",
       label: "書籍登録",
       icon: "➕",

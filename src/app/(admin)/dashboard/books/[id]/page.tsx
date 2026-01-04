@@ -2,6 +2,7 @@ import { findBookById } from "@/app/actions/bookActions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import LoanButton from "./_components/LoanButton";
 
 interface BookDetailPageProps {
   params: Promise<{ id: string }>;
@@ -122,7 +123,8 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
             </div>
 
             <div className="pt-6">
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-4 items-center">
+                <LoanButton bookId={id} isAvailable={book.isAvailable} />
                 <Link
                   href="/dashboard"
                   className="px-6 py-3 bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors"
