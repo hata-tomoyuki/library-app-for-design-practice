@@ -8,6 +8,9 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
+  const userRole = (session.user as any).role;
+  const isAdmin = userRole === "ADMIN";
+
   const books = await findAllBooks();
 
   return (
@@ -22,12 +25,14 @@ export default async function DashboardPage() {
               登録されている書籍の一覧です
             </p>
           </div>
-          <Link
-            href="/dashboard/books/create"
-            className="px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
-          >
-            ➕ 新規登録
-          </Link>
+          {isAdmin && (
+            <Link
+              href="/dashboard/books/create"
+              className="px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+            >
+              ➕ 新規登録
+            </Link>
+          )}
         </div>
 
         {books.length === 0 ? (
@@ -35,12 +40,14 @@ export default async function DashboardPage() {
             <p className="text-zinc-600 dark:text-zinc-400 text-lg mb-4">
               まだ書籍が登録されていません
             </p>
-            <Link
-              href="/dashboard/books/create"
-              className="inline-block px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
-            >
-              最初の書籍を登録する
-            </Link>
+            {isAdmin && (
+              <Link
+                href="/dashboard/books/create"
+                className="inline-block px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+              >
+                最初の書籍を登録する
+              </Link>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

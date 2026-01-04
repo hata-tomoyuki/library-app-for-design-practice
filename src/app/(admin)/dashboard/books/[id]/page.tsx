@@ -1,4 +1,6 @@
 import { findBookById } from "@/app/actions/bookActions";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -10,6 +12,12 @@ interface BookDetailPageProps {
 
 export default async function BookDetailPage({ params }: BookDetailPageProps) {
   const { id } = await params;
+
+  const session = await auth();
+  if (!session) redirect("/login");
+
+  const userRole = (session.user as any).role;
+  const isAdmin = userRole === "ADMIN";
 
   let book;
   try {
@@ -131,18 +139,22 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
                 >
                   一覧に戻る
                 </Link>
-                <Link
-                  href={`/dashboard/books/${id}/edit`}
-                  className="px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
-                >
-                  編集
-                </Link>
-                <Link
-                  href={`/dashboard/books/${id}/delete`}
-                  className="px-6 py-3 bg-red-600 dark:bg-red-700 text-white font-medium rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-colors"
-                >
-                  削除
-                </Link>
+                {isAdmin && (
+                  <>
+                    <Link
+                      href={`/dashboard/books/${id}/edit`}
+                      className="px-6 py-3 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-black font-medium rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+                    >
+                      編集
+                    </Link>
+                    <Link
+                      href={`/dashboard/books/${id}/delete`}
+                      className="px-6 py-3 bg-red-600 dark:bg-red-700 text-white font-medium rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-colors"
+                    >
+                      削除
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

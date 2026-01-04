@@ -4,9 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/actions/authActions";
 import Button from "@/app/components/Button";
+import { useSession } from "next-auth/react";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const userRole = (session?.user as any)?.role;
+  const isAdmin = userRole === "ADMIN";
 
   const menuItems = [
     {
@@ -14,15 +18,19 @@ export default function Sidebar() {
       label: "書籍一覧",
       icon: "📚",
     },
+    ...(isAdmin
+      ? [
+          {
+            href: "/dashboard/books/create",
+            label: "書籍登録",
+            icon: "➕",
+          },
+        ]
+      : []),
     {
       href: "/dashboard/loans",
       label: "貸出一覧",
       icon: "📖",
-    },
-    {
-      href: "/dashboard/books/create",
-      label: "書籍登録",
-      icon: "➕",
     },
   ];
 

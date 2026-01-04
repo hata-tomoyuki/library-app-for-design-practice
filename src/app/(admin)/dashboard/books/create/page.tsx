@@ -1,6 +1,16 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import CreateBookForm from "./_components/CreateBookForm";
 
-export default function CreateBookPage() {
+export default async function CreateBookPage() {
+  const session = await auth();
+  if (!session) redirect("/login");
+
+  const userRole = (session.user as any).role;
+  if (userRole !== "ADMIN") {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black py-12 px-8">
       <div className="max-w-4xl mx-auto">
