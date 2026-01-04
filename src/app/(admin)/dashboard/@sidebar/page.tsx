@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logoutAction } from "@/app/actions/authActions";
+import Button from "@/app/components/Button";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -20,7 +22,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 min-h-screen bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 p-6">
+    <aside className="w-64 min-h-screen bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 p-6 flex flex-col">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-black dark:text-zinc-50">
           図書館管理
@@ -30,7 +32,7 @@ export default function Sidebar() {
         </p>
       </div>
 
-      <nav className="space-y-2">
+      <nav className="space-y-2 flex-1">
         {menuItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -49,6 +51,20 @@ export default function Sidebar() {
           );
         })}
       </nav>
+
+      <div className="mt-auto pt-4 border-t border-zinc-200 dark:border-zinc-800">
+        <form action={logoutAction}>
+          <Button
+            type="submit"
+            variant="danger"
+            fullWidth
+            className="flex items-center justify-center gap-2"
+          >
+            <span>🚪</span>
+            <span>ログアウト</span>
+          </Button>
+        </form>
+      </div>
     </aside>
   );
 }

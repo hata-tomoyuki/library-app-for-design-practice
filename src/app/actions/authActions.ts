@@ -11,6 +11,7 @@ import prisma from "@/lib/prisma";
 import { BcryptPasswordHasher } from "@/server/adapter/utils/bcryptPasswordHasher";
 import { UserController } from "@/server/adapter/controllers/userController";
 import type { SignupInput, LoginInput } from "@/schemas/userSchema";
+import { cookies } from "next/headers";
 
 type ActionState =
   | { ok: true; message?: string }
@@ -106,4 +107,16 @@ export async function loginAction(
           : "メールアドレスまたはパスワードが違います",
     };
   }
+}
+
+/**
+ * Logout: セッションを削除してログインページにリダイレクト
+ */
+export async function logoutAction() {
+  const cookieStore = await cookies();
+
+  // NextAuthのセッションクッキーを削除
+  cookieStore.delete("next-auth.session-token");
+
+  redirect("/login");
 }
