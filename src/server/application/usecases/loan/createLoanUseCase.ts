@@ -16,7 +16,9 @@ export class CreateLoanUseCase implements CreateLoanUseCaseInterface {
     private readonly transactionManager: TransactionManagerInterface,
   ) {}
 
-  async execute(requestDto: CreateLoanRequestDto): Promise<CreateLoanResponseDto> {
+  async execute(
+    requestDto: CreateLoanRequestDto,
+  ): Promise<CreateLoanResponseDto> {
     return await this.transactionManager.run(async (ctx) => {
       // 書籍の存在確認と利用可能チェック
       const book = await this.bookRepository.findById(requestDto.bookId);
@@ -70,4 +72,3 @@ export class CreateLoanUseCase implements CreateLoanUseCaseInterface {
     });
   }
 }
-

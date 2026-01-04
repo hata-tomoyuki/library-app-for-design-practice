@@ -4,9 +4,7 @@ import { FindLoanByIdResponseDto } from "../../dtos/loan/findLoanByIdResponseDto
 import { FindLoanByIdUseCaseInterface } from "./findLoanByIdUseCaseInterface";
 
 export class FindLoanByIdUseCase implements FindLoanByIdUseCaseInterface {
-  constructor(
-    private readonly loanRepository: LoanRepositoryInterface,
-  ) {}
+  constructor(private readonly loanRepository: LoanRepositoryInterface) {}
 
   async execute(
     requestDto: FindLoanByIdRequestDto,
@@ -29,4 +27,3 @@ export class FindLoanByIdUseCase implements FindLoanByIdUseCaseInterface {
     };
   }
 }
-

@@ -13,7 +13,9 @@ export class ReturnLoanUseCase implements ReturnLoanUseCaseInterface {
     private readonly transactionManager: TransactionManagerInterface,
   ) {}
 
-  async execute(requestDto: ReturnLoanRequestDto): Promise<ReturnLoanResponseDto> {
+  async execute(
+    requestDto: ReturnLoanRequestDto,
+  ): Promise<ReturnLoanResponseDto> {
     return await this.transactionManager.run(async (ctx) => {
       // 貸出を取得
       const loan = await this.loanRepository.findById(requestDto.loanId, ctx);
@@ -61,4 +63,3 @@ export class ReturnLoanUseCase implements ReturnLoanUseCaseInterface {
     });
   }
 }
-

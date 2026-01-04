@@ -6,4 +6,3 @@ export interface FindLoansByUserIdUseCaseInterface {
     requestDto: FindLoansByUserIdRequestDto,
   ): Promise<FindLoansByUserIdResponseDto[]>;
 }
-

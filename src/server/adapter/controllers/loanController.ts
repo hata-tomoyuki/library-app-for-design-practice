@@ -23,7 +23,10 @@ export class LoanController {
    * 貸出作成
    * 外部形式をアプリケーション層の形式（CreateLoanRequestDto）に変換する
    */
-  async create(input: { bookId: string; userId: string }): Promise<CreateLoanResponseDto> {
+  async create(input: {
+    bookId: string;
+    userId: string;
+  }): Promise<CreateLoanResponseDto> {
     const requestDto: CreateLoanRequestDto = {
       bookId: input.bookId,
       userId: input.userId,
@@ -47,7 +50,9 @@ export class LoanController {
   /**
    * 貸出記録をIDで検索
    */
-  async findById(input: FindLoanByIdRequestDto): Promise<FindLoanByIdResponseDto> {
+  async findById(
+    input: FindLoanByIdRequestDto,
+  ): Promise<FindLoanByIdResponseDto> {
     return await this.findLoanByIdUseCase.execute(input);
   }
 
@@ -60,4 +65,3 @@ export class LoanController {
     return await this.findLoansByUserIdUseCase.execute(input);
   }
 }
-

@@ -8,4 +8,3 @@ export interface FindLoansByUserIdResponseDto {
   createdAt: Date;
   updatedAt: Date;
 }
-

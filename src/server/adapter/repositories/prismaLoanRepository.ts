@@ -13,10 +13,7 @@ export class PrismaLoanRepository implements LoanRepositoryInterface {
     return this.prisma;
   }
 
-  async create(
-    loan: Loan,
-    ctx?: TransactionContextInterface,
-  ): Promise<Loan> {
+  async create(loan: Loan, ctx?: TransactionContextInterface): Promise<Loan> {
     const prisma = this.getPrismaClient(ctx);
 
     const createdLoan = await prisma.loan.create({
@@ -95,10 +92,7 @@ export class PrismaLoanRepository implements LoanRepositoryInterface {
     );
   }
 
-  async update(
-    loan: Loan,
-    ctx?: TransactionContextInterface,
-  ): Promise<Loan> {
+  async update(loan: Loan, ctx?: TransactionContextInterface): Promise<Loan> {
     const prisma = this.getPrismaClient(ctx);
 
     const updatedLoan = await prisma.loan.update({
@@ -124,4 +118,3 @@ export class PrismaLoanRepository implements LoanRepositoryInterface {
     );
   }
 }
-

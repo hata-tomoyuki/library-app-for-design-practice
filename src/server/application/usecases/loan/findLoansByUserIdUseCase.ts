@@ -6,9 +6,7 @@ import { FindLoansByUserIdUseCaseInterface } from "./findLoansByUserIdUseCaseInt
 export class FindLoansByUserIdUseCase
   implements FindLoansByUserIdUseCaseInterface
 {
-  constructor(
-    private readonly loanRepository: LoanRepositoryInterface,
-  ) {}
+  constructor(private readonly loanRepository: LoanRepositoryInterface) {}
 
   async execute(
     requestDto: FindLoansByUserIdRequestDto,
@@ -27,4 +25,3 @@ export class FindLoansByUserIdUseCase
     }));
   }
 }
-

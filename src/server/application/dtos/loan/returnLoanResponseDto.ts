@@ -7,4 +7,3 @@ export interface ReturnLoanResponseDto {
   createdAt: Date;
   updatedAt: Date;
 }
-
