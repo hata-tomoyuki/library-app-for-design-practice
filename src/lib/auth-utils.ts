@@ -35,6 +35,7 @@ export async function signIn(
         userId: result.userId,
         email: result.email,
         name: result.name,
+        role: result.role,
       },
       secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "",
     });

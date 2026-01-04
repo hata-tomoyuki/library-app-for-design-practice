@@ -43,6 +43,7 @@ export const authOptions: NextAuthOptions = {
             id: result.userId,
             email: result.email,
             name: result.name ?? undefined,
+            role: result.role,
           };
         } catch {
           // 認証失敗時は null を返す（NextAuthの仕様）
@@ -54,12 +55,16 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.userId = user.id;
+      if (user) {
+        token.userId = user.id;
+        token.role = (user as any).role;
+      }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         (session.user as any).id = token.userId;
+        (session.user as any).role = token.role;
       }
       return session;
     },
