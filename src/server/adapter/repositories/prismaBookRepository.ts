@@ -12,7 +12,7 @@ export class PrismaBookRepository implements BookRepositoryInterface {
         title: book.title,
         author: book.author,
         publishedAt: book.publishedAt,
-        isAvailable: false,
+        isAvailable: true,
         imageUrl: book.imageUrl ?? "/image/no-image.png",
         createdAt: book.createdAt,
         updatedAt: book.updatedAt,

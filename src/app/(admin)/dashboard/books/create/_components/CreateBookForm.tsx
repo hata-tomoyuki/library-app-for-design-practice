@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useRef } from "react";
+import { useState, useTransition, useRef, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createBook } from "@/app/actions/bookActions";
@@ -32,7 +32,7 @@ export default function CreateBookForm() {
     title: "",
     author: "",
     publishedAt: today,
-    isAvailable: false,
+    isAvailable: true, // 書籍作成時は常に貸出可能
     imageUrl: undefined,
   };
 
@@ -47,6 +47,11 @@ export default function CreateBookForm() {
     resolver: zodResolver(createBookSchema),
     defaultValues,
   });
+
+  // 書籍作成時は常に貸出可能に固定
+  useEffect(() => {
+    setValue("isAvailable", true);
+  }, [setValue]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,7 +96,7 @@ export default function CreateBookForm() {
           title: data.title,
           author: data.author,
           publishedAt: data.publishedAt,
-          isAvailable: data.isAvailable,
+          isAvailable: true, // 書籍作成時は常に貸出可能
           imageUrl,
         });
 
@@ -263,15 +268,16 @@ export default function CreateBookForm() {
         </div>
 
         <div>
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="flex items-center gap-3">
             <input
               type="checkbox"
               {...register("isAvailable")}
-              disabled={isPending}
-              className="w-5 h-5 text-zinc-900 dark:text-zinc-50 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 rounded focus:ring-2 focus:ring-zinc-500 disabled:opacity-50 cursor-pointer"
+              checked={true}
+              disabled={true}
+              className="w-5 h-5 text-zinc-900 dark:text-zinc-50 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 rounded focus:ring-2 focus:ring-zinc-500 disabled:opacity-50 cursor-not-allowed"
             />
             <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              貸出可能
+              貸出可能（新規登録時は常に貸出可能です）
             </span>
           </label>
           {errors.isAvailable && (
