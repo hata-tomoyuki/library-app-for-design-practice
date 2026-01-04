@@ -25,6 +25,7 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
+  loans         Loan[]
 }
 
 model Account {
@@ -72,6 +73,22 @@ model Book {
   imageUrl    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  loans       Loan[]
 }
 
+model Loan {
+  id        String   @id @default(uuid())
+  bookId    String
+  userId    String
+  loanDate  DateTime
+  dueDate   DateTime
+  returnDate DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  book Book @relation(fields: [bookId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([bookId])
+  @@index([userId])
+}
